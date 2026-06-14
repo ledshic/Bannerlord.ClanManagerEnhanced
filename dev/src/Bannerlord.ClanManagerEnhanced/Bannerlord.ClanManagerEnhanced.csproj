@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GameFolder Condition="'$(GameFolder)' == ''">D:\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <GameBinWin64>$(GameFolder)\bin\Win64_Shipping_Client</GameBinWin64>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+
+    <AssemblyName>Bannerlord.ClanManagerEnhanced</AssemblyName>
+    <RootNamespace>Bannerlord.ClanManagerEnhanced</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>YourName</Authors>
+    <Product>Bannerlord.ClanManagerEnhanced</Product>
+    <Description>Clan-focused campaign quality-of-life module scaffold with Harmony + MCM integration.</Description>
+
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(GameBinWin64)\TaleWorlds.Core.dll')">
+    <Reference Include="TaleWorlds.CampaignSystem">
+      <HintPath>$(GameBinWin64)\TaleWorlds.CampaignSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Core">
+      <HintPath>$(GameBinWin64)\TaleWorlds.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Library">
+      <HintPath>$(GameBinWin64)\TaleWorlds.Library.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Localization">
+      <HintPath>$(GameBinWin64)\TaleWorlds.Localization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.InputSystem">
+      <HintPath>$(GameBinWin64)\TaleWorlds.InputSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.MountAndBlade">
+      <HintPath>$(GameBinWin64)\TaleWorlds.MountAndBlade.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.ObjectSystem">
+      <HintPath>$(GameBinWin64)\TaleWorlds.ObjectSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.SaveSystem">
+      <HintPath>$(GameBinWin64)\TaleWorlds.SaveSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="!Exists('$(GameBinWin64)\TaleWorlds.Core.dll')">
+    <PackageReference Include="Bannerlord.ReferenceAssemblies" Version="1.*" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bannerlord.MCM" Version="5.11.3" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <Target Name="CopyToModule" AfterTargets="Build">
+    <ItemGroup>
+      <ModOutputFiles Include="$(OutputPath)$(AssemblyName).dll" />
+      <ModOutputFiles Include="$(OutputPath)$(AssemblyName).pdb" Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(ModOutputFiles)"
+          DestinationFolder="$(_ModulePath)bin\Win64_Shipping_Client"
+          SkipUnchangedFiles="true" />
+
+    <ItemGroup>
+      <ModModuleDataFiles Include="$(MSBuildProjectDirectory)\..\..\..\module\ModuleData\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(ModModuleDataFiles)"
+          DestinationFiles="@(ModModuleDataFiles->'$(_ModulePath)ModuleData\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+
+    <Message Text="Bannerlord.ClanManagerEnhanced: Copied build output + ModuleData to _Module/" Importance="high" />
+  </Target>
+
+  <PropertyGroup>
+    <_ModulePath>$(MSBuildProjectDirectory)\..\..\..\_Module\</_ModulePath>
+  </PropertyGroup>
+
+</Project>

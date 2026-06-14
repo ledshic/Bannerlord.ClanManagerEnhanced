@@ -1,0 +1,74 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\workspace\\Bannerlord.ClanManagerEnhanced\\dev\\src\\Bannerlord.ClanManagerEnhanced\\Bannerlord.ClanManagerEnhanced.csproj": {}
+  },
+  "projects": {
+    "D:\\workspace\\Bannerlord.ClanManagerEnhanced\\dev\\src\\Bannerlord.ClanManagerEnhanced\\Bannerlord.ClanManagerEnhanced.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\workspace\\Bannerlord.ClanManagerEnhanced\\dev\\src\\Bannerlord.ClanManagerEnhanced\\Bannerlord.ClanManagerEnhanced.csproj",
+        "projectName": "Bannerlord.ClanManagerEnhanced",
+        "projectPath": "D:\\workspace\\Bannerlord.ClanManagerEnhanced\\dev\\src\\Bannerlord.ClanManagerEnhanced\\Bannerlord.ClanManagerEnhanced.csproj",
+        "packagesPath": "C:\\Users\\ricar\\.nuget\\packages\\",
+        "outputPath": "D:\\workspace\\Bannerlord.ClanManagerEnhanced\\dev\\src\\Bannerlord.ClanManagerEnhanced\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\ricar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Bannerlord.MCM": {
+              "include": "Compile",
+              "target": "Package",
+              "version": "[5.11.3, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.421\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
