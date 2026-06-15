@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Clan-focused campaign quality-of-life module scaffold with Harmony + MCM integrat" +
     "ion.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c8c6bfc0df65da782ad359e4b7bc9f574561d585")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dde309328d6c08a7ac6d00574c4b33dea79f2fb3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bannerlord.ClanManagerEnhanced")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bannerlord.ClanManagerEnhanced")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
