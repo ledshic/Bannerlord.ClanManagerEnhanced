@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Party.PartyComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -96,6 +97,21 @@ namespace Bannerlord.ClanManagerEnhanced
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             null,
             new[] { typeof(MobileParty) },
+            null);
+
+        private static readonly MethodInfo? CreateLordPartyMethod = typeof(LordPartyComponent).GetMethod(
+            "CreateLordParty",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            new[]
+            {
+                typeof(string),
+                typeof(Hero),
+                typeof(CampaignVec2),
+                typeof(float),
+                typeof(Settlement),
+                typeof(Hero)
+            },
             null);
 
         public override void RegisterEvents()
@@ -396,6 +412,11 @@ namespace Bannerlord.ClanManagerEnhanced
                 return (false, $"is governor of: {hero.GovernorOf.Name}");
             }
 
+            if (!hero.CanLeadParty())
+            {
+                return (false, "cannot lead party");
+            }
+
             var settlement = hero.CurrentSettlement;
             if (settlement == null)
             {
@@ -498,6 +519,11 @@ namespace Bannerlord.ClanManagerEnhanced
         {
             try
             {
+                if (TryCreateLordPartyForHero(hero, out var createdLordParty))
+                {
+                    return createdLordParty;
+                }
+
                 var method = GetOrResolveCreatePartyMethod();
                 if (method == null)
                 {
@@ -513,8 +539,15 @@ namespace Bannerlord.ClanManagerEnhanced
                 }
 
                 DebugLog($"Attempting to create party for hero {hero.Name} using method {method.Name}");
+                var existingParty = hero.PartyBelongedTo;
                 var result = method.Invoke(null, args);
-                return result is bool created ? created : true;
+
+                if (result is bool created)
+                {
+                    return created && HasCreatedPartyForHero(hero, existingParty);
+                }
+
+                return HasCreatedPartyForHero(hero, existingParty);
             }
             catch (Exception ex)
             {
@@ -523,6 +556,70 @@ namespace Bannerlord.ClanManagerEnhanced
                 DebugLog($"Exception creating party for hero {hero.Name}: {ex.Message}");
                 return false;
             }
+        }
+
+        private static bool TryCreateLordPartyForHero(Hero hero, out bool created)
+        {
+            created = false;
+
+            if (CreateLordPartyMethod == null)
+            {
+                return false;
+            }
+
+            var settlement = hero.CurrentSettlement;
+            var ownerHero = hero;
+            if (settlement == null)
+            {
+                DebugLog($"CreateLordParty prerequisites missing for {hero.Name}: settlement={settlement != null}");
+                return true;
+            }
+
+            try
+            {
+                var existingParty = hero.PartyBelongedTo;
+                var partyId = $"cme_clan_party_{Guid.NewGuid():N}";
+                var result = CreateLordPartyMethod.Invoke(null, new object?[]
+                {
+                    partyId,
+                    ownerHero,
+                    settlement.GatePosition,
+                    0f,
+                    settlement,
+                    hero
+                });
+
+                created = result is MobileParty party
+                    ? party.LeaderHero == hero || HasCreatedPartyForHero(hero, existingParty)
+                    : HasCreatedPartyForHero(hero, existingParty);
+
+                if (!created)
+                {
+                    DebugLog($"CreateLordParty invoked for {hero.Name}, but no new party was detected");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                DebugLog($"CreateLordParty failed for {hero.Name}: {ex.Message}");
+                return false;
+            }
+        }
+
+        private static bool HasCreatedPartyForHero(Hero hero, MobileParty? previousParty)
+        {
+            var currentParty = hero.PartyBelongedTo;
+            if (currentParty != null && currentParty != previousParty)
+            {
+                return true;
+            }
+
+            return MobileParty.All.Any(p =>
+                p != null &&
+                !p.IsDisbanding &&
+                p.LeaderHero == hero &&
+                p != previousParty);
         }
 
         private static MethodInfo? GetOrResolveCreatePartyMethod()
