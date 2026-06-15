@@ -8,3 +8,4 @@ D:\workspace\Bannerlord.ClanManagerEnhanced\dev\src\Bannerlord.ClanManagerEnhanc
 D:\workspace\Bannerlord.ClanManagerEnhanced\dev\src\Bannerlord.ClanManagerEnhanced\obj\Release\Bannerlord.ClanManagerEnhanced.csproj.CoreCompileInputs.cache
 D:\workspace\Bannerlord.ClanManagerEnhanced\dev\src\Bannerlord.ClanManagerEnhanced\obj\Release\Bannerlord.ClanManagerEnhanced.dll
 D:\workspace\Bannerlord.ClanManagerEnhanced\dev\src\Bannerlord.ClanManagerEnhanced\obj\Release\Bannerlord.ClanManagerEnhanced.pdb
+D:\workspace\Bannerlord.ClanManagerEnhanced\dev\src\Bannerlord.ClanManagerEnhanced\obj\Release\Bannerlord.ClanManagerEnhanced.sourcelink.json

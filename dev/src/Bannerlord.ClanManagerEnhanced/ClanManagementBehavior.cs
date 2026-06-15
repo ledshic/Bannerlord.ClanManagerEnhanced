@@ -19,6 +19,18 @@ namespace Bannerlord.ClanManagerEnhanced
         private static bool _createPartyMethodResolved;
         private static MethodInfo? _createPartyMethod;
 
+        /// <summary>
+        /// Output debug log if enabled in settings
+        /// </summary>
+        private static void DebugLog(string message)
+        {
+            var settings = ClanManagerSettings.Instance;
+            if (settings?.EnableDebugLogging == true)
+            {
+                Debug.Print($"[ClanManagerEnhanced.Debug] {message}");
+            }
+        }
+
         private static readonly MethodInfo? LeaveArmyMethod = typeof(MobileParty).GetMethod(
             "LeaveArmy",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
@@ -50,23 +62,29 @@ namespace Bannerlord.ClanManagerEnhanced
                 return;
             }
 
+            DebugLog("=== Daily Tick Started ===");
+
             if (!settings.AllowPlayerClanPartiesJoinExternalArmies)
             {
+                DebugLog("Enforcing external army restriction...");
                 EnforceExternalArmyRestriction(settings);
             }
 
             if (settings.AutoCreatePartyForIdleClanMembers)
             {
+                DebugLog("Running auto-create party for idle clan members...");
                 AutoCreatePartyForIdleClanMembers(settings);
             }
 
             if (settings.AutoReinforceParties)
             {
+                DebugLog("Running auto-reinforce parties...");
                 ReinforceLowStrengthParties(settings);
             }
 
             if (settings.AutoTransferExcessPrisoners)
             {
+                DebugLog("Running auto-transfer excess prisoners...");
                 TransferExcessPrisonersTodungeons(settings);
             }
 
@@ -75,6 +93,8 @@ namespace Bannerlord.ClanManagerEnhanced
                 InformationManager.DisplayMessage(new InformationMessage(
                     new TextObject("{=CME_DAILY_TICK}ClanManagerEnhanced daily check executed.").ToString()));
             }
+
+            DebugLog("=== Daily Tick Completed ===");
         }
 
         private void AutoCreatePartyForIdleClanMembers(ClanManagerSettings settings)
@@ -82,18 +102,23 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
+                DebugLog("PlayerClan is null, skipping auto party creation");
                 return;
             }
 
             if (!HasAvailableClanPartySlot(playerClan))
             {
+                DebugLog($"No available party slots for clan. Current parties: {MobileParty.All.Count(p => p?.LeaderHero?.Clan == playerClan && !p.IsMainParty)}");
                 return;
             }
 
             int createdCount = 0;
+            int checkedCount = 0;
 
             foreach (var hero in Hero.AllAliveHeroes)
             {
+                checkedCount++;
+
                 if (!IsIdleTavernClanMember(hero, playerClan))
                 {
                     continue;
@@ -101,14 +126,22 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 if (!HasAvailableClanPartySlot(playerClan))
                 {
+                    DebugLog($"Party slots filled during creation loop, created {createdCount} parties so far");
                     break;
                 }
 
                 if (TryCreatePartyForHero(hero))
                 {
                     createdCount++;
+                    DebugLog($"Successfully created party for idle hero {hero.Name}");
+                }
+                else
+                {
+                    DebugLog($"Failed to create party for idle hero {hero.Name}");
                 }
             }
+
+            DebugLog($"AutoCreatePartyForIdleClanMembers: checked {checkedCount} heroes, created {createdCount} parties");
 
             if (createdCount > 0 && settings.ShowNotifications)
             {
@@ -123,6 +156,7 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
+                DebugLog("PlayerClan is null, skipping external army enforcement");
                 return;
             }
 
@@ -145,15 +179,24 @@ namespace Bannerlord.ClanManagerEnhanced
                 // Allowed case: player explicitly calls the party into player's own army.
                 if (army.LeaderParty != null && army.LeaderParty.IsMainParty)
                 {
+                    DebugLog($"Party {party.Name} is in player's own army, allowing");
                     continue;
                 }
 
-                if (TryForceLeaveArmy(party, army) && settings.ShowNotifications)
+                if (TryForceLeaveArmy(party, army))
                 {
                     blockedCount++;
                     blockedPartyName ??= party.Name?.ToString();
+                    DebugLog($"Forced party {party.Name} to leave external army");
+
+                    if (settings.ShowNotifications)
+                    {
+                        // notification already handled
+                    }
                 }
             }
+
+            DebugLog($"External army enforcement: blocked {blockedCount} parties");
 
             if (blockedCount > 0 && settings.ShowNotifications && ShouldShowBlockedArmyNotice())
             {
@@ -195,31 +238,43 @@ namespace Bannerlord.ClanManagerEnhanced
         {
             if (hero == null || hero == Hero.MainHero)
             {
+                DebugLog($"Hero check failed: hero={hero?.Name?.ToString() ?? "null"}, isMainHero={(hero == Hero.MainHero)}");
                 return false;
             }
 
-            if (hero.Clan != playerClan || hero.IsDead || hero.IsChild || hero.IsPrisoner)
+            if (hero.Clan != playerClan)
             {
+                DebugLog($"Hero {hero.Name} clan check failed: hero.Clan={hero.Clan?.Name?.ToString() ?? "null"}, playerClan={playerClan.Name}");
+                return false;
+            }
+
+            if (hero.IsDead || hero.IsChild || hero.IsPrisoner)
+            {
+                DebugLog($"Hero {hero.Name} status check failed: IsDead={hero.IsDead}, IsChild={hero.IsChild}, IsPrisoner={hero.IsPrisoner}");
                 return false;
             }
 
             if (hero.PartyBelongedTo != null || hero.GovernorOf != null)
             {
+                DebugLog($"Hero {hero.Name} party/governor check failed: PartyBelongedTo={hero.PartyBelongedTo?.Name?.ToString() ?? "null"}, GovernorOf={hero.GovernorOf?.Name?.ToString() ?? "null"}");
                 return false;
             }
 
             var settlement = hero.CurrentSettlement;
             if (settlement == null || !settlement.IsTown)
             {
+                DebugLog($"Hero {hero.Name} settlement check failed: settlement={settlement?.Name?.ToString() ?? "null"}, IsTown={settlement?.IsTown.ToString() ?? "false"}");
                 return false;
             }
 
             // For compatibility across game versions, we only enforce this when the property exists.
             if (TryGetBoolProperty(hero, "StayingInSettlement", out var stayingInSettlement) && !stayingInSettlement)
             {
+                DebugLog($"Hero {hero.Name} StayingInSettlement check failed: {stayingInSettlement}");
                 return false;
             }
 
+            DebugLog($"Hero {hero.Name} is IDLE in town {settlement.Name}");
             return true;
         }
 
@@ -227,6 +282,7 @@ namespace Bannerlord.ClanManagerEnhanced
         {
             if (!TryGetClanPartyLimit(playerClan, out var partyLimit))
             {
+                DebugLog($"Could not determine party limit for clan {playerClan.Name}, assuming unlimited");
                 return true;
             }
 
@@ -237,7 +293,10 @@ namespace Bannerlord.ClanManagerEnhanced
                 p.LeaderHero != null &&
                 p.LeaderHero.Clan == playerClan);
 
-            return currentPartyCount < partyLimit;
+            bool hasSlot = currentPartyCount < partyLimit;
+            DebugLog($"Party slot check for {playerClan.Name}: {currentPartyCount}/{partyLimit} slots used");
+
+            return hasSlot;
         }
 
         private static bool TryGetClanPartyLimit(Clan playerClan, out int partyLimit)
@@ -289,21 +348,25 @@ namespace Bannerlord.ClanManagerEnhanced
                 var method = GetOrResolveCreatePartyMethod();
                 if (method == null)
                 {
+                    DebugLog($"No create party method found for hero {hero.Name}");
                     return false;
                 }
 
                 var args = BuildArgumentsForMethod(method, hero);
                 if (args == null)
                 {
+                    DebugLog($"Failed to build arguments for create party method for hero {hero.Name}");
                     return false;
                 }
 
+                DebugLog($"Attempting to create party for hero {hero.Name} using method {method.Name}");
                 var result = method.Invoke(null, args);
                 return result is bool created ? created : true;
             }
             catch (Exception ex)
             {
                 Debug.Print($"[ClanManagerEnhanced] Failed to create clan party for {hero.Name}: {ex}");
+                DebugLog($"Exception creating party for hero {hero.Name}: {ex.Message}");
                 return false;
             }
         }
@@ -578,12 +641,15 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
+                DebugLog("PlayerClan is null, skipping reinforcement");
                 return;
             }
 
             var lowStrengthParties = MobileParty.All
                 .Where(p => ShouldCheckParty(p, playerClan) && IsPartyBelowStrengthThreshold(p, settings))
                 .ToList();
+
+            DebugLog($"Found {lowStrengthParties.Count} low-strength parties out of {MobileParty.All.Count(p => ShouldCheckParty(p, playerClan))} clan parties");
 
             if (lowStrengthParties.Count == 0)
             {
@@ -598,8 +664,11 @@ namespace Bannerlord.ClanManagerEnhanced
                 .Where(s => IsCastleOvergarrisoned(s, settings))
                 .ToList();
 
+            DebugLog($"Found {overgarrisonedCastles.Count} overgarrisoned castles out of {castles.Count} total clan castles");
+
             if (overgarrisonedCastles.Count == 0)
             {
+                DebugLog("No overgarrisoned castles available for troop extraction");
                 return;
             }
 
@@ -610,8 +679,11 @@ namespace Bannerlord.ClanManagerEnhanced
                 {
                     int reinforcedCount = ExtractAndReinforceParty(party, overgarrisonedCastles, settings);
                     totalReinforced += reinforcedCount;
+                    DebugLog($"Reinforced party {party.Name} with {reinforcedCount} troops");
                 }
             }
+
+            DebugLog($"Reinforcement completed: reinforced {totalReinforced} total troops");
 
             if (totalReinforced > 0 && settings.ShowNotifications)
             {
@@ -626,12 +698,15 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
+                DebugLog("PlayerClan is null, skipping prisoner transfer");
                 return;
             }
 
             var overloadedParties = MobileParty.All
                 .Where(p => ShouldCheckParty(p, playerClan) && IsPartyOverloadedWithPrisoners(p, settings))
                 .ToList();
+
+            DebugLog($"Found {overloadedParties.Count} overloaded parties out of {MobileParty.All.Count(p => ShouldCheckParty(p, playerClan))} clan parties");
 
             if (overloadedParties.Count == 0)
             {
@@ -642,8 +717,11 @@ namespace Bannerlord.ClanManagerEnhanced
                 .Where(s => s.IsVillage == false && s.IsHideout == false && s.OwnerClan == playerClan && s.Town != null)
                 .ToList();
 
+            DebugLog($"Found {castles.Count} clan castles for prisoner transfer");
+
             if (castles.Count == 0)
             {
+                DebugLog("No castles available for prisoner transfer");
                 return;
             }
 
@@ -654,8 +732,11 @@ namespace Bannerlord.ClanManagerEnhanced
                 {
                     int transferredCount = TransferPrisonersToClosestCastle(party, castles);
                     totalTransferred += transferredCount;
+                    DebugLog($"Transferred {transferredCount} prisoners from party {party.Name}");
                 }
             }
+
+            DebugLog($"Prisoner transfer completed: transferred {totalTransferred} total prisoners");
 
             if (totalTransferred > 0 && settings.ShowNotifications)
             {
