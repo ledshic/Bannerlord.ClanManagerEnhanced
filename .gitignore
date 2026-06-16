@@ -1,0 +1,42 @@
+# Debug and Release directories
+bin/
+obj/
+
+# Build output directories
+out/
+
+# Visual Studio and IDE directories
+.vs/
+.idea/
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+*.sln.iml
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+
+# IDE-specific files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Runtime files
+*.dll
+*.exe
+*.so
+*.dylib
+
+# Other files
+.DS_Store
+Thumbs.db
