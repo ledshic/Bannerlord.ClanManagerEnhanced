@@ -1,42 +1,34 @@
-# Debug and Release directories
-bin/
-obj/
-
-# Build output directories
+# Build outputs
+**/bin/
+**/obj/
 out/
-
-# Visual Studio and IDE directories
-.vs/
-.idea/
-.vscode/
 
 # User-specific files
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.csproj.user
+
+# Visual Studio
+.vs/
+
+# Rider / JetBrains
+.idea/
 *.sln.iml
 
-# NuGet packages
-packages/
-*.nupkg
-*.snupkg
+# VS Code
+.vscode/
 
-# Build results
-[Dd]ebug/
-[Rr]elease/
-[Bb]uild/
-
-# IDE-specific files
-.DS_Store
-*.swp
-*.swo
-*~
-
-# Runtime files
-*.dll
-*.exe
-*.so
-*.dylib
-
-# Other files
+# Mac
 .DS_Store
 Thumbs.db
+
+# Archive files
+*.zip
+
+# _Module generated content (populated by build: don't commit stale copies)
+# Keep only _Module/SubModule.xml as the hand-authored manifest.
+_Module/bin/
+_Module/ModuleData/
