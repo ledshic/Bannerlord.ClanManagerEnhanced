@@ -42,6 +42,7 @@
     <string id="CME_DBG_STATUS_UNKNOWN" text="未知" />
     <string id="CME_DBG_MEMBER_LINE" text="[成员] {NAME} | {LOCATION} | {STATUS}" />
     <string id="CME_DBG_MEMBER_SCAN_END" text="=== 家族成员状态扫描结束 ===" />
+    <string id="CME_Reinforcement" text="部队补充" />
     <string id="CME_PartyReinforce" text="自动补充低兵力队伍" />
     <string id="CME_PartyReinforceHint" text="每日检测：从驻军过多的城堡中提取部队补充到低于兵力阈值的队伍。" />
     <string id="CME_PartyStrengthThreshold" text="队伍兵力阈值 %" />
@@ -51,6 +52,7 @@
     <string id="CME_ReinforcePercent" text="补充人数 %" />
     <string id="CME_ReinforcePercentHint" text="每次补充时从城堡提取的部队数量，按队伍最大容量的百分比计算 (0-100%，向上取整)。" />
     <string id="CME_REINFORCE_SUCCESS" text="已从城堡补充 {COUNT} 名士兵到队伍。" />
+    <string id="CME_Prisoners" text="俘虏管理" />
     <string id="CME_PrisonerTransfer" text="自动将过量俘虏转移到地牢" />
     <string id="CME_PrisonerTransferHint" text="每日检测：将队伍中过多的俘虏转移到家族城堡地牢。" />
     <string id="CME_PrisonerThreshold" text="队伍俘虏容量阈值 %" />
@@ -69,6 +71,7 @@
     <string id="CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT" text="[阶段 4] [跳过建队] {HERO} 无可用队伍槽位" />
     <string id="CME_DBG_PHASE4_CREATE_SUCCESS" text="[阶段 4] [成功] 已为 {HERO} 创建队伍" />
     <string id="CME_DBG_PHASE4_CREATE_FAILED" text="[阶段 4] [失败] 为 {HERO} 创建队伍失败" />
+    <string id="CME_DBG_PHASE4_FALLBACK_FAILED" text="[阶段 4] [回退失败] 无法将 {HERO} 移动至玩家队伍" />
     <string id="CME_DBG_SUMMARY_HEADER" text="=== 详细汇总 ===" />
     <string id="CME_DBG_SUMMARY_TOTAL_HEROES" text="[汇总] 检查英雄总数: {COUNT}" />
     <string id="CME_DBG_SUMMARY_CLAN_MEMBERS" text="[汇总] 家族在世成员: {COUNT}" />
@@ -76,6 +79,8 @@
     <string id="CME_DBG_SUMMARY_NON_IDLE" text="[汇总] 检查到的非闲置英雄: {COUNT}" />
     <string id="CME_DBG_SUMMARY_CREATED" text="[汇总] 已创建队伍数: {COUNT}" />
     <string id="CME_DBG_SUMMARY_FALLBACK" text="[汇总] 回退加入玩家队伍次数: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK_ATTEMPT" text="[汇总] 回退加入尝试次数: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK_FAILED" text="[汇总] 回退加入失败次数: {COUNT}" />
     <string id="CME_DBG_SUMMARY_BREAKDOWN" text="[明细] {REASON}: {COUNT} 名英雄" />
     <string id="CME_DBG_SUMMARY_IDLE_LIST" text="[闲置列表] 闲置成员: {LIST}" />
     <string id="CME_DBG_AUTO_CREATE_END" text="=== 闲置家族成员自动建队结束 ===" />
@@ -120,6 +125,7 @@
     <string id="CME_ERR_TRANSFER_PRISONERS_FAILED" text="[错误] 转移俘虏失败: {DETAIL}" />
     <string id="CME_ERR_NO_CREATE_PARTY_METHOD" text="[错误] 未找到兼容的建队方法。" />
     <string id="CME_ERR_NO_ADD_HERO_METHOD" text="[错误] 未找到兼容的 add-hero-to-party 方法。" />
+    <string id="CME_AUTO_RETURN_RESULT" text="自动归队检查完成。尝试: {ATTEMPT}，成功: {SUCCESS}，失败: {FAILED}。" />
     <string id="CME_INIT_FAIL" text="ClanManagerEnhanced 初始化 Harmony 失败。请检查日志。" />
   </strings>
 </base>

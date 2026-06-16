@@ -47,15 +47,13 @@ namespace Bannerlord.ClanManagerEnhanced
             phase1ClanText.SetTextVariable("TIER", playerClan.Tier);
             InformationManager.DisplayMessage(new InformationMessage(phase1ClanText.ToString()));
 
-            if (!HasAvailableClanPartySlot(playerClan))
+            var hasAvailableSlot = HasAvailableClanPartySlot(playerClan);
+            if (!hasAvailableSlot)
             {
                 var currentPartyCount = GetCurrentClanPartyCount(playerClan);
                 var noSlotText = new TextObject("{=CME_DBG_PHASE1_NO_SLOT}[PHASE 1] No available party slots. Current parties (including main): {COUNT}");
                 noSlotText.SetTextVariable("COUNT", currentPartyCount);
                 InformationManager.DisplayMessage(new InformationMessage(noSlotText.ToString()));
-                InformationManager.DisplayMessage(new InformationMessage(
-                    new TextObject("{=CME_DBG_AUTO_CREATE_END_NO_SLOT}=== Auto Create Party For Idle Clan Members END (No party slots) ===").ToString()));
-                return;
             }
 
             var allClanHeroes = Hero.AllAliveHeroes.Where(h => h.Clan == playerClan).ToList();
@@ -66,6 +64,8 @@ namespace Bannerlord.ClanManagerEnhanced
             var idleCount = 0;
             var createdCount = 0;
             var joinedPlayerPartyCount = 0;
+            var fallbackAttemptCount = 0;
+            var fallbackFailedCount = 0;
             var notIdleCount = 0;
             var idleHeroesList = new List<Hero>();
             var notIdleReasons = new Dictionary<string, int>();
@@ -107,29 +107,51 @@ namespace Bannerlord.ClanManagerEnhanced
                     createSkippedText.SetTextVariable("REASON", GetIdleReasonText(checkResult.reason).ToString());
                     InformationManager.DisplayMessage(new InformationMessage(createSkippedText.ToString()));
 
-                    if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
+                    if (settings.AutoJoinPlayerPartyWhenCreateFails)
                     {
-                        joinedPlayerPartyCount++;
-                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
-                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
-                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        fallbackAttemptCount++;
+                        if (TryJoinHeroToPlayerParty(hero))
+                        {
+                            joinedPlayerPartyCount++;
+                            var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                            fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        }
+                        else
+                        {
+                            fallbackFailedCount++;
+                            var fallbackFailedText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_FAILED}[PHASE 4] [FALLBACK_FAILED] Failed to move {HERO} to player party");
+                            fallbackFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackFailedText.ToString()));
+                        }
                     }
 
                     continue;
                 }
 
-                if (!HasAvailableClanPartySlot(playerClan))
+                if (!hasAvailableSlot)
                 {
                     var createSkippedNoSlotText = new TextObject("{=CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT}[PHASE 4] [CREATE_SKIPPED] No available party slot for {HERO}");
                     createSkippedNoSlotText.SetTextVariable("HERO", hero.Name.ToString());
                     InformationManager.DisplayMessage(new InformationMessage(createSkippedNoSlotText.ToString()));
 
-                    if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
+                    if (settings.AutoJoinPlayerPartyWhenCreateFails)
                     {
-                        joinedPlayerPartyCount++;
-                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
-                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
-                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        fallbackAttemptCount++;
+                        if (TryJoinHeroToPlayerParty(hero))
+                        {
+                            joinedPlayerPartyCount++;
+                            var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                            fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        }
+                        else
+                        {
+                            fallbackFailedCount++;
+                            var fallbackFailedText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_FAILED}[PHASE 4] [FALLBACK_FAILED] Failed to move {HERO} to player party");
+                            fallbackFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackFailedText.ToString()));
+                        }
                     }
 
                     continue;
@@ -148,12 +170,23 @@ namespace Bannerlord.ClanManagerEnhanced
                     createFailedText.SetTextVariable("HERO", hero.Name.ToString());
                     InformationManager.DisplayMessage(new InformationMessage(createFailedText.ToString()));
 
-                    if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
+                    if (settings.AutoJoinPlayerPartyWhenCreateFails)
                     {
-                        joinedPlayerPartyCount++;
-                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
-                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
-                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        fallbackAttemptCount++;
+                        if (TryJoinHeroToPlayerParty(hero))
+                        {
+                            joinedPlayerPartyCount++;
+                            var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                            fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                        }
+                        else
+                        {
+                            fallbackFailedCount++;
+                            var fallbackFailedText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_FAILED}[PHASE 4] [FALLBACK_FAILED] Failed to move {HERO} to player party");
+                            fallbackFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                            InformationManager.DisplayMessage(new InformationMessage(fallbackFailedText.ToString()));
+                        }
                     }
                 }
             }
@@ -184,6 +217,14 @@ namespace Bannerlord.ClanManagerEnhanced
             var summaryFallbackText = new TextObject("{=CME_DBG_SUMMARY_FALLBACK}[SUMMARY] Fallback joins to player party: {COUNT}");
             summaryFallbackText.SetTextVariable("COUNT", joinedPlayerPartyCount);
             InformationManager.DisplayMessage(new InformationMessage(summaryFallbackText.ToString()));
+
+            var summaryFallbackAttemptText = new TextObject("{=CME_DBG_SUMMARY_FALLBACK_ATTEMPT}[SUMMARY] Fallback join attempts: {COUNT}");
+            summaryFallbackAttemptText.SetTextVariable("COUNT", fallbackAttemptCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryFallbackAttemptText.ToString()));
+
+            var summaryFallbackFailedText = new TextObject("{=CME_DBG_SUMMARY_FALLBACK_FAILED}[SUMMARY] Fallback join failed: {COUNT}");
+            summaryFallbackFailedText.SetTextVariable("COUNT", fallbackFailedCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryFallbackFailedText.ToString()));
 
             foreach (var kvp in notIdleReasons.OrderByDescending(x => x.Value))
             {
@@ -227,6 +268,15 @@ namespace Bannerlord.ClanManagerEnhanced
                 var joinedText = new TextObject("{=CME_AUTO_JOIN_PLAYER_PARTY}Automatically moved {COUNT} idle clan member(s) to player party after party creation failed.");
                 joinedText.SetTextVariable("COUNT", joinedPlayerPartyCount);
                 InformationManager.DisplayMessage(new InformationMessage(joinedText.ToString()));
+            }
+
+            if (settings.AutoJoinPlayerPartyWhenCreateFails)
+            {
+                var fallbackResultText = new TextObject("{=CME_AUTO_RETURN_RESULT}Auto-return check completed. Attempted: {ATTEMPT}, succeeded: {SUCCESS}, failed: {FAILED}.");
+                fallbackResultText.SetTextVariable("ATTEMPT", fallbackAttemptCount);
+                fallbackResultText.SetTextVariable("SUCCESS", joinedPlayerPartyCount);
+                fallbackResultText.SetTextVariable("FAILED", fallbackFailedCount);
+                InformationManager.DisplayMessage(new InformationMessage(fallbackResultText.ToString()));
             }
         }
 

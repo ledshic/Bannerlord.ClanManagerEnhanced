@@ -40,6 +40,7 @@
     <string id="CME_DBG_STATUS_UNKNOWN" text="unknown" />
     <string id="CME_DBG_MEMBER_LINE" text="[MEMBER] {NAME} | {LOCATION} | {STATUS}" />
     <string id="CME_DBG_MEMBER_SCAN_END" text="=== Clan Member Status Scan END ===" />
+    <string id="CME_Reinforcement" text="Troop Reinforcement" />
     <string id="CME_PartyReinforce" text="Auto Reinforce Low-Strength Parties" />
     <string id="CME_PartyReinforceHint" text="Daily check: extract troops from overgarrisoned castles to reinforce parties below strength threshold." />
     <string id="CME_PartyStrengthThreshold" text="Party Troop Strength Threshold %" />
@@ -49,6 +50,7 @@
     <string id="CME_ReinforcePercent" text="Reinforcement Amount %" />
     <string id="CME_ReinforcePercentHint" text="Percentage of party max capacity to extract per reinforcement (0-100%, rounded up)." />
     <string id="CME_REINFORCE_SUCCESS" text="Reinforced party troops with {COUNT} soldiers from castles." />
+    <string id="CME_Prisoners" text="Prisoner Management" />
     <string id="CME_PrisonerTransfer" text="Auto Transfer Excess Prisoners to Dungeons" />
     <string id="CME_PrisonerTransferHint" text="Daily check: transfer prisoners from overloaded parties to clan castle dungeons." />
     <string id="CME_PrisonerThreshold" text="Party Prisoner Capacity Threshold %" />
@@ -67,6 +69,7 @@
     <string id="CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT" text="[PHASE 4] [CREATE_SKIPPED] No available party slot for {HERO}" />
     <string id="CME_DBG_PHASE4_CREATE_SUCCESS" text="[PHASE 4] [SUCCESS] Created party for {HERO}" />
     <string id="CME_DBG_PHASE4_CREATE_FAILED" text="[PHASE 4] [FAILED] Failed to create party for {HERO}" />
+    <string id="CME_DBG_PHASE4_FALLBACK_FAILED" text="[PHASE 4] [FALLBACK_FAILED] Failed to move {HERO} to player party" />
     <string id="CME_DBG_SUMMARY_HEADER" text="=== DETAILED SUMMARY ===" />
     <string id="CME_DBG_SUMMARY_TOTAL_HEROES" text="[SUMMARY] Total heroes checked: {COUNT}" />
     <string id="CME_DBG_SUMMARY_CLAN_MEMBERS" text="[SUMMARY] Clan members (alive): {COUNT}" />
@@ -74,6 +77,8 @@
     <string id="CME_DBG_SUMMARY_NON_IDLE" text="[SUMMARY] Non-idle heroes checked: {COUNT}" />
     <string id="CME_DBG_SUMMARY_CREATED" text="[SUMMARY] Parties created: {COUNT}" />
     <string id="CME_DBG_SUMMARY_FALLBACK" text="[SUMMARY] Fallback joins to player party: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK_ATTEMPT" text="[SUMMARY] Fallback join attempts: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK_FAILED" text="[SUMMARY] Fallback join failed: {COUNT}" />
     <string id="CME_DBG_SUMMARY_BREAKDOWN" text="[BREAKDOWN] {REASON}: {COUNT} heroes" />
     <string id="CME_DBG_SUMMARY_IDLE_LIST" text="[IDLE_LIST] Idle members: {LIST}" />
     <string id="CME_DBG_AUTO_CREATE_END" text="=== Auto Create Party For Idle Clan Members END ===" />
@@ -119,5 +124,6 @@
     <string id="CME_ERR_NO_CREATE_PARTY_METHOD" text="[ERROR] No compatible create-party action method found." />
     <string id="CME_ERR_NO_ADD_HERO_METHOD" text="[ERROR] No compatible add-hero-to-party action method found." />
     <string id="CME_INIT_FAIL" text="ClanManagerEnhanced failed to initialize Harmony. Check logs." />
+    <string id="CME_AUTO_RETURN_RESULT" text="Auto-return check completed. Attempted: {ATTEMPT}, succeeded: {SUCCESS}, failed: {FAILED}." />
   </strings>
 </base>
