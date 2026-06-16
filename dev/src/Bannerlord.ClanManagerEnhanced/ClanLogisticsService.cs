@@ -17,7 +17,8 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping reinforcement"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_PLAYER_CLAN_NULL_REINFORCE}Player clan is null, skipping reinforcement.").ToString()));
                 return;
             }
 
@@ -25,7 +26,10 @@ namespace Bannerlord.ClanManagerEnhanced
                 .Where(p => ClanPartyFilters.ShouldCheckParty(p, playerClan) && IsPartyBelowStrengthThreshold(p, settings))
                 .ToList();
 
-            InformationManager.DisplayMessage(new InformationMessage($"Found {lowStrengthParties.Count} low-strength parties out of {MobileParty.All.Count(p => ClanPartyFilters.ShouldCheckParty(p, playerClan))} clan parties"));
+            var lowStrengthText = new TextObject("{=CME_DBG_REINFORCE_LOW_STRENGTH_FOUND}Found {LOW_COUNT} low-strength parties out of {TOTAL_COUNT} clan parties");
+            lowStrengthText.SetTextVariable("LOW_COUNT", lowStrengthParties.Count);
+            lowStrengthText.SetTextVariable("TOTAL_COUNT", MobileParty.All.Count(p => ClanPartyFilters.ShouldCheckParty(p, playerClan)));
+            InformationManager.DisplayMessage(new InformationMessage(lowStrengthText.ToString()));
 
             if (lowStrengthParties.Count == 0)
             {
@@ -42,7 +46,8 @@ namespace Bannerlord.ClanManagerEnhanced
 
             if (overgarrisonedCastles.Count == 0)
             {
-                InformationManager.DisplayMessage(new InformationMessage("No overgarrisoned castles available for troop extraction"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_REINFORCE_NO_OVERGARRISON}No overgarrisoned castles available for troop extraction").ToString()));
                 return;
             }
 
@@ -56,7 +61,10 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 var reinforcedCount = ExtractAndReinforceParty(party, overgarrisonedCastles, settings);
                 totalReinforced += reinforcedCount;
-                InformationManager.DisplayMessage(new InformationMessage($"Reinforced party {party.Name} with {reinforcedCount} troops"));
+                var reinforcedPartyText = new TextObject("{=CME_DBG_REINFORCE_PARTY_RESULT}Reinforced party {PARTY} with {COUNT} troops");
+                reinforcedPartyText.SetTextVariable("PARTY", party.Name.ToString());
+                reinforcedPartyText.SetTextVariable("COUNT", reinforcedCount);
+                InformationManager.DisplayMessage(new InformationMessage(reinforcedPartyText.ToString()));
             }
 
             if (totalReinforced > 0 && settings.ShowNotifications)
@@ -72,7 +80,8 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping prisoner transfer"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_PLAYER_CLAN_NULL_PRISONER_TRANSFER}Player clan is null, skipping prisoner transfer.").ToString()));
                 return;
             }
 
@@ -91,7 +100,8 @@ namespace Bannerlord.ClanManagerEnhanced
 
             if (castles.Count == 0)
             {
-                InformationManager.DisplayMessage(new InformationMessage("No castles available for prisoner transfer"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_PRISONER_TRANSFER_NO_CASTLE}No castles available for prisoner transfer").ToString()));
                 return;
             }
 
@@ -105,7 +115,10 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 var transferredCount = TransferPrisonersToClosestCastle(party, castles);
                 totalTransferred += transferredCount;
-                InformationManager.DisplayMessage(new InformationMessage($"Transferred {transferredCount} prisoners from party {party.Name}"));
+                var transferredPartyText = new TextObject("{=CME_DBG_PRISONER_TRANSFER_PARTY_RESULT}Transferred {COUNT} prisoners from party {PARTY}");
+                transferredPartyText.SetTextVariable("COUNT", transferredCount);
+                transferredPartyText.SetTextVariable("PARTY", party.Name.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(transferredPartyText.ToString()));
             }
 
             if (totalTransferred > 0 && settings.ShowNotifications)
@@ -216,7 +229,9 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to reinforce party: {ex}"));
+                var reinforceErrorText = new TextObject("{=CME_ERR_REINFORCE_FAILED}[ERROR] Failed to reinforce party: {DETAIL}");
+                reinforceErrorText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(reinforceErrorText.ToString()));
                 return 0;
             }
         }
@@ -271,7 +286,9 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to extract troops from garrison: {ex}"));
+                var extractErrorText = new TextObject("{=CME_ERR_EXTRACT_TROOPS_FAILED}[ERROR] Failed to extract troops from garrison: {DETAIL}");
+                extractErrorText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(extractErrorText.ToString()));
                 return 0;
             }
         }
@@ -329,10 +346,11 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to transfer prisoners: {ex}"));
+                var transferErrorText = new TextObject("{=CME_ERR_TRANSFER_PRISONERS_FAILED}[ERROR] Failed to transfer prisoners: {DETAIL}");
+                transferErrorText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(transferErrorText.ToString()));
                 return 0;
             }
         }
     }
 }
-

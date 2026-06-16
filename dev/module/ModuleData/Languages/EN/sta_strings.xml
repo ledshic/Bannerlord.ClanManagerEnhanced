@@ -14,13 +14,13 @@
     <string id="CME_AllowExternalArmyJoin" text="Allow Player Clan Parties Join External Armies" />
     <string id="CME_AllowExternalArmyJoinHint" text="If disabled, player clan parties can only stay in the player's own army and will leave non-player armies." />
     <string id="CME_AutoCreateIdleClanParty" text="Auto Create Party For Idle Clan Members" />
-    <string id="CME_AutoCreateIdleClanPartyHint" text="Daily check: if a clan member is idle in a town tavern and party slots are available, automatically create a clan party for them." />
+    <string id="CME_AutoCreateIdleClanPartyHint" text="Daily check: if a clan member is idle in a town or castle and party slots are available, automatically create a clan party for them." />
     <string id="CME_AutoReturnOnCreateFail" text="Auto Join Player Party When Party Creation Fails" />
     <string id="CME_AutoReturnOnCreateFailHint" text="When an idle clan member cannot create a party for any reason, automatically move them into the player main party." />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced daily check executed." />
-    <string id="CME_IDLE_MEMBERS_FOUND" text="Found {COUNT} idle clan member(s) in towns." />
+    <string id="CME_IDLE_MEMBERS_FOUND" text="Found {COUNT} idle clan member(s) in settlements." />
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="Blocked {COUNT} player clan party(ies) from staying in a non-player army." />
-    <string id="CME_AUTO_CREATE_PARTY_CREATED" text="Automatically created {COUNT} clan party(ies) from idle tavern members." />
+    <string id="CME_AUTO_CREATE_PARTY_CREATED" text="Automatically created {COUNT} clan party(ies) from idle settlement members." />
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="Automatically moved {COUNT} idle clan member(s) to player party after party creation failed." />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== Daily Tick Started ===" />
     <string id="CME_DBG_MOD_ENABLED" text="Mod Enabled: {VALUE}" />
@@ -54,6 +54,70 @@
     <string id="CME_PrisonerThreshold" text="Party Prisoner Capacity Threshold %" />
     <string id="CME_PrisonerThresholdHint" text="Parties above this percentage of prisoner capacity will transfer excess to dungeons (0-100%)." />
     <string id="CME_TRANSFER_PRISONERS" text="Transferred {COUNT} prisoners to castle dungeons." />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_AUTO_CREATE" text="Player clan is null, skipping auto party creation." />
+    <string id="CME_DBG_AUTO_CREATE_START" text="=== Auto Create Party For Idle Clan Members START ===" />
+    <string id="CME_DBG_PHASE1_CLAN" text="[PHASE 1] Player Clan: {CLAN}, Tier: {TIER}" />
+    <string id="CME_DBG_PHASE1_NO_SLOT" text="[PHASE 1] No available party slots. Current parties (including main): {COUNT}" />
+    <string id="CME_DBG_AUTO_CREATE_END_NO_SLOT" text="=== Auto Create Party For Idle Clan Members END (No party slots) ===" />
+    <string id="CME_DBG_PHASE2_TOTAL_MEMBERS" text="[PHASE 2] Total clan members (alive): {COUNT}" />
+    <string id="CME_DBG_PHASE3_NOT_IDLE" text="[PHASE 3] [NOT_IDLE] {HERO}: {REASON}" />
+    <string id="CME_DBG_PHASE3_IDLE_FOUND" text="[PHASE 3] [IDLE_FOUND] {HERO} in {SETTLEMENT}" />
+    <string id="CME_DBG_PHASE4_CREATE_SKIPPED_REASON" text="[PHASE 4] [CREATE_SKIPPED] {HERO}: {REASON}" />
+    <string id="CME_DBG_PHASE4_FALLBACK_SUCCESS" text="[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party" />
+    <string id="CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT" text="[PHASE 4] [CREATE_SKIPPED] No available party slot for {HERO}" />
+    <string id="CME_DBG_PHASE4_CREATE_SUCCESS" text="[PHASE 4] [SUCCESS] Created party for {HERO}" />
+    <string id="CME_DBG_PHASE4_CREATE_FAILED" text="[PHASE 4] [FAILED] Failed to create party for {HERO}" />
+    <string id="CME_DBG_SUMMARY_HEADER" text="=== DETAILED SUMMARY ===" />
+    <string id="CME_DBG_SUMMARY_TOTAL_HEROES" text="[SUMMARY] Total heroes checked: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_CLAN_MEMBERS" text="[SUMMARY] Clan members (alive): {COUNT}" />
+    <string id="CME_DBG_SUMMARY_IDLE_FOUND" text="[SUMMARY] Idle clan members found: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_NON_IDLE" text="[SUMMARY] Non-idle heroes checked: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_CREATED" text="[SUMMARY] Parties created: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK" text="[SUMMARY] Fallback joins to player party: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_BREAKDOWN" text="[BREAKDOWN] {REASON}: {COUNT} heroes" />
+    <string id="CME_DBG_SUMMARY_IDLE_LIST" text="[IDLE_LIST] Idle members: {LIST}" />
+    <string id="CME_DBG_AUTO_CREATE_END" text="=== Auto Create Party For Idle Clan Members END ===" />
+    <string id="CME_REASON_HERO_NULL" text="hero is null" />
+    <string id="CME_REASON_IS_MAIN_HERO" text="is main hero" />
+    <string id="CME_REASON_CLAN_MISMATCH" text="clan mismatch" />
+    <string id="CME_REASON_HERO_DEAD" text="hero is dead" />
+    <string id="CME_REASON_HERO_CHILD" text="hero is a child" />
+    <string id="CME_REASON_HERO_PRISONER" text="hero is a prisoner" />
+    <string id="CME_REASON_ALREADY_IN_PARTY" text="already in party" />
+    <string id="CME_REASON_IS_GOVERNOR" text="is governor" />
+    <string id="CME_REASON_NO_SETTLEMENT" text="current settlement is null" />
+    <string id="CME_REASON_NOT_TOWN_CASTLE" text="settlement is not a town/castle" />
+    <string id="CME_REASON_NOT_STAYING_IN_SETTLEMENT" text="staying in settlement is false" />
+    <string id="CME_REASON_CANNOT_LEAD_PARTY" text="cannot lead party" />
+    <string id="CME_REASON_IDLE_SETTLEMENT" text="idle in settlement" />
+    <string id="CME_DBG_PARTY_LIMIT_UNKNOWN" text="Could not determine party limit for clan {CLAN}, assuming unlimited" />
+    <string id="CME_DBG_PARTY_SLOT_CHECK" text="Party slot check for {CLAN}: {CURRENT}/{LIMIT} slots used (main party included)" />
+    <string id="CME_DBG_NO_CREATE_METHOD" text="No create party method found for hero {HERO}" />
+    <string id="CME_DBG_CREATE_ARGS_BUILD_FAILED" text="Failed to build arguments for create party method for hero {HERO}" />
+    <string id="CME_ERR_CREATE_PARTY_EXCEPTION" text="[ERROR] Failed to create clan party for {HERO}: {DETAIL}" />
+    <string id="CME_DBG_CREATE_LORD_PREREQ_MISSING" text="CreateLordParty prerequisites missing for {HERO}: settlement=false" />
+    <string id="CME_ERR_CREATE_LORD_FAILED" text="CreateLordParty failed for {HERO}: {DETAIL}" />
+    <string id="CME_DBG_MAIN_PARTY_NULL" text="Player main party is null, cannot move {HERO}" />
+    <string id="CME_DBG_NO_ADD_HERO_METHOD" text="No add-hero-to-party method found for fallback join: {HERO}" />
+    <string id="CME_DBG_ADD_HERO_ARGS_BUILD_FAILED" text="Failed to build add-hero arguments for {HERO}" />
+    <string id="CME_ERR_FALLBACK_JOIN_EXCEPTION" text="[ERROR] Failed fallback join to player party for {HERO}: {DETAIL}" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_EXT_ARMY" text="Player clan is null, skipping external army enforcement." />
+    <string id="CME_DBG_EXT_ARMY_ALLOW_OWN" text="Party {PARTY} is in player's own army, allowing" />
+    <string id="CME_DBG_EXT_ARMY_FORCED_LEAVE" text="Forced party {PARTY} to leave external army" />
+    <string id="CME_DBG_EXT_ARMY_BLOCKED_SUMMARY" text="External army enforcement: blocked {COUNT} parties" />
+    <string id="CME_ERR_EXT_ARMY_REMOVE_FAILED" text="[ERROR] Failed to remove party from army: {DETAIL}" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_REINFORCE" text="Player clan is null, skipping reinforcement." />
+    <string id="CME_DBG_REINFORCE_LOW_STRENGTH_FOUND" text="Found {LOW_COUNT} low-strength parties out of {TOTAL_COUNT} clan parties" />
+    <string id="CME_DBG_REINFORCE_NO_OVERGARRISON" text="No overgarrisoned castles available for troop extraction" />
+    <string id="CME_DBG_REINFORCE_PARTY_RESULT" text="Reinforced party {PARTY} with {COUNT} troops" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_PRISONER_TRANSFER" text="Player clan is null, skipping prisoner transfer." />
+    <string id="CME_DBG_PRISONER_TRANSFER_NO_CASTLE" text="No castles available for prisoner transfer" />
+    <string id="CME_DBG_PRISONER_TRANSFER_PARTY_RESULT" text="Transferred {COUNT} prisoners from party {PARTY}" />
+    <string id="CME_ERR_REINFORCE_FAILED" text="[ERROR] Failed to reinforce party: {DETAIL}" />
+    <string id="CME_ERR_EXTRACT_TROOPS_FAILED" text="[ERROR] Failed to extract troops from garrison: {DETAIL}" />
+    <string id="CME_ERR_TRANSFER_PRISONERS_FAILED" text="[ERROR] Failed to transfer prisoners: {DETAIL}" />
+    <string id="CME_ERR_NO_CREATE_PARTY_METHOD" text="[ERROR] No compatible create-party action method found." />
+    <string id="CME_ERR_NO_ADD_HERO_METHOD" text="[ERROR] No compatible add-hero-to-party action method found." />
     <string id="CME_INIT_FAIL" text="ClanManagerEnhanced failed to initialize Harmony. Check logs." />
   </strings>
 </base>

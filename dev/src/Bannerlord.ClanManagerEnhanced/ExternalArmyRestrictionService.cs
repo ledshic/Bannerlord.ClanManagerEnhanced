@@ -33,7 +33,8 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping external army enforcement"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_PLAYER_CLAN_NULL_EXT_ARMY}Player clan is null, skipping external army enforcement.").ToString()));
                 return;
             }
 
@@ -54,18 +55,24 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 if (army.LeaderParty != null && army.LeaderParty.IsMainParty)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"Party {party.Name} is in player's own army, allowing"));
+                    var allowOwnArmyText = new TextObject("{=CME_DBG_EXT_ARMY_ALLOW_OWN}Party {PARTY} is in player's own army, allowing");
+                    allowOwnArmyText.SetTextVariable("PARTY", party.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(allowOwnArmyText.ToString()));
                     continue;
                 }
 
                 if (TryForceLeaveArmy(party, army))
                 {
                     blockedCount++;
-                    InformationManager.DisplayMessage(new InformationMessage($"Forced party {party.Name} to leave external army"));
+                    var forcedLeaveText = new TextObject("{=CME_DBG_EXT_ARMY_FORCED_LEAVE}Forced party {PARTY} to leave external army");
+                    forcedLeaveText.SetTextVariable("PARTY", party.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(forcedLeaveText.ToString()));
                 }
             }
 
-            InformationManager.DisplayMessage(new InformationMessage($"External army enforcement: blocked {blockedCount} parties"));
+            var blockedSummaryText = new TextObject("{=CME_DBG_EXT_ARMY_BLOCKED_SUMMARY}External army enforcement: blocked {COUNT} parties");
+            blockedSummaryText.SetTextVariable("COUNT", blockedCount);
+            InformationManager.DisplayMessage(new InformationMessage(blockedSummaryText.ToString()));
 
             if (blockedCount > 0 && settings.ShowNotifications && ShouldShowBlockedArmyNotice())
             {
@@ -100,11 +107,12 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to remove party from army: {ex}"));
+                var removeArmyErrorText = new TextObject("{=CME_ERR_EXT_ARMY_REMOVE_FAILED}[ERROR] Failed to remove party from army: {DETAIL}");
+                removeArmyErrorText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(removeArmyErrorText.ToString()));
             }
 
             return false;
         }
     }
 }
-

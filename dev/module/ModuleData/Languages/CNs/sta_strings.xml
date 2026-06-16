@@ -14,15 +14,15 @@
     <string id="CME_AllowExternalArmyJoin" text="允许玩家家族队伍加入外部军团" />
     <string id="CME_AllowExternalArmyJoinHint" text="关闭后，玩家家族队伍只能留在玩家自己的军团中，并会离开非玩家军团。" />
     <string id="CME_AutoCreateIdleClanParty" text="为闲置家族成员自动创建队伍" />
-    <string id="CME_AutoCreateIdleClanPartyHint" text="每日检测：当家族成员闲置在城镇酒馆且家族仍有队伍槽位时，自动为其创建家族队伍。" />
+    <string id="CME_AutoCreateIdleClanPartyHint" text="每日检测：当家族成员闲置在城镇或城堡且家族仍有队伍槽位时，自动为其创建家族队伍。" />
     <string id="CME_AutoReturnOnCreateFail" text="创建队伍失败时自动加入玩家队伍" />
     <string id="CME_AutoReturnOnCreateFailHint" text="当闲置家族成员因各种原因无法创建队伍时，自动将其加入玩家主队。" />
     <string id="CME_EnableDebugLogging" text="启用调试日志" />
     <string id="CME_EnableDebugLoggingHint" text="启用详细调试日志，包含每日家族成员状态扫描（写入游戏日志）。可用于排查问题。" />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced 每日检查已执行。" />
-    <string id="CME_IDLE_MEMBERS_FOUND" text="在城镇中检测到 {COUNT} 个闲置家族成员。" />
+    <string id="CME_IDLE_MEMBERS_FOUND" text="在聚落中检测到 {COUNT} 个闲置家族成员。" />
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="已阻止 {COUNT} 支玩家家族队伍留在非玩家军团。" />
-    <string id="CME_AUTO_CREATE_PARTY_CREATED" text="已为闲置酒馆成员自动创建 {COUNT} 支家族队伍。" />
+    <string id="CME_AUTO_CREATE_PARTY_CREATED" text="已为闲置聚落成员自动创建 {COUNT} 支家族队伍。" />
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="因创建队伍失败，已将 {COUNT} 名闲置家族成员自动加入玩家队伍。" />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== 每日检测开始 ===" />
     <string id="CME_DBG_MOD_ENABLED" text="模组启用: {VALUE}" />
@@ -56,6 +56,70 @@
     <string id="CME_PrisonerThreshold" text="队伍俘虏容量阈值 %" />
     <string id="CME_PrisonerThresholdHint" text="当队伍俘虏数量高于最大容量的此百分比时将转移到地牢 (0-100%)。" />
     <string id="CME_TRANSFER_PRISONERS" text="已将 {COUNT} 名俘虏转移到城堡地牢。" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_AUTO_CREATE" text="玩家家族为空，跳过自动建队。" />
+    <string id="CME_DBG_AUTO_CREATE_START" text="=== 闲置家族成员自动建队开始 ===" />
+    <string id="CME_DBG_PHASE1_CLAN" text="[阶段 1] 玩家家族: {CLAN}, 等级: {TIER}" />
+    <string id="CME_DBG_PHASE1_NO_SLOT" text="[阶段 1] 无可用队伍槽位。当前队伍数（含主队）: {COUNT}" />
+    <string id="CME_DBG_AUTO_CREATE_END_NO_SLOT" text="=== 闲置家族成员自动建队结束（无队伍槽位） ===" />
+    <string id="CME_DBG_PHASE2_TOTAL_MEMBERS" text="[阶段 2] 家族在世成员总数: {COUNT}" />
+    <string id="CME_DBG_PHASE3_NOT_IDLE" text="[阶段 3] [非闲置] {HERO}: {REASON}" />
+    <string id="CME_DBG_PHASE3_IDLE_FOUND" text="[阶段 3] [发现闲置] {HERO} 于 {SETTLEMENT}" />
+    <string id="CME_DBG_PHASE4_CREATE_SKIPPED_REASON" text="[阶段 4] [跳过建队] {HERO}: {REASON}" />
+    <string id="CME_DBG_PHASE4_FALLBACK_SUCCESS" text="[阶段 4] [回退成功] 已将 {HERO} 移动至玩家队伍" />
+    <string id="CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT" text="[阶段 4] [跳过建队] {HERO} 无可用队伍槽位" />
+    <string id="CME_DBG_PHASE4_CREATE_SUCCESS" text="[阶段 4] [成功] 已为 {HERO} 创建队伍" />
+    <string id="CME_DBG_PHASE4_CREATE_FAILED" text="[阶段 4] [失败] 为 {HERO} 创建队伍失败" />
+    <string id="CME_DBG_SUMMARY_HEADER" text="=== 详细汇总 ===" />
+    <string id="CME_DBG_SUMMARY_TOTAL_HEROES" text="[汇总] 检查英雄总数: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_CLAN_MEMBERS" text="[汇总] 家族在世成员: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_IDLE_FOUND" text="[汇总] 检测到闲置家族成员: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_NON_IDLE" text="[汇总] 检查到的非闲置英雄: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_CREATED" text="[汇总] 已创建队伍数: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_FALLBACK" text="[汇总] 回退加入玩家队伍次数: {COUNT}" />
+    <string id="CME_DBG_SUMMARY_BREAKDOWN" text="[明细] {REASON}: {COUNT} 名英雄" />
+    <string id="CME_DBG_SUMMARY_IDLE_LIST" text="[闲置列表] 闲置成员: {LIST}" />
+    <string id="CME_DBG_AUTO_CREATE_END" text="=== 闲置家族成员自动建队结束 ===" />
+    <string id="CME_REASON_HERO_NULL" text="英雄为空" />
+    <string id="CME_REASON_IS_MAIN_HERO" text="是主角" />
+    <string id="CME_REASON_CLAN_MISMATCH" text="家族不匹配" />
+    <string id="CME_REASON_HERO_DEAD" text="英雄已死亡" />
+    <string id="CME_REASON_HERO_CHILD" text="英雄为未成年" />
+    <string id="CME_REASON_HERO_PRISONER" text="英雄为俘虏" />
+    <string id="CME_REASON_ALREADY_IN_PARTY" text="已在队伍中" />
+    <string id="CME_REASON_IS_GOVERNOR" text="担任总督" />
+    <string id="CME_REASON_NO_SETTLEMENT" text="当前聚落为空" />
+    <string id="CME_REASON_NOT_TOWN_CASTLE" text="聚落不是城镇或城堡" />
+    <string id="CME_REASON_NOT_STAYING_IN_SETTLEMENT" text="未处于驻留聚落状态" />
+    <string id="CME_REASON_CANNOT_LEAD_PARTY" text="无法带队" />
+    <string id="CME_REASON_IDLE_SETTLEMENT" text="在聚落中闲置" />
+    <string id="CME_DBG_PARTY_LIMIT_UNKNOWN" text="无法确定家族 {CLAN} 的队伍上限，按无限制处理" />
+    <string id="CME_DBG_PARTY_SLOT_CHECK" text="家族 {CLAN} 队伍槽位检查: {CURRENT}/{LIMIT}（含主队）" />
+    <string id="CME_DBG_NO_CREATE_METHOD" text="未找到适用于 {HERO} 的建队方法" />
+    <string id="CME_DBG_CREATE_ARGS_BUILD_FAILED" text="为 {HERO} 构建建队参数失败" />
+    <string id="CME_ERR_CREATE_PARTY_EXCEPTION" text="[错误] 为 {HERO} 创建家族队伍失败: {DETAIL}" />
+    <string id="CME_DBG_CREATE_LORD_PREREQ_MISSING" text="{HERO} 的 CreateLordParty 前置条件不足: settlement=false" />
+    <string id="CME_ERR_CREATE_LORD_FAILED" text="为 {HERO} 执行 CreateLordParty 失败: {DETAIL}" />
+    <string id="CME_DBG_MAIN_PARTY_NULL" text="玩家主队为空，无法移动 {HERO}" />
+    <string id="CME_DBG_NO_ADD_HERO_METHOD" text="未找到可用于回退加入主队的 add-hero-to-party 方法: {HERO}" />
+    <string id="CME_DBG_ADD_HERO_ARGS_BUILD_FAILED" text="为 {HERO} 构建 add-hero 参数失败" />
+    <string id="CME_ERR_FALLBACK_JOIN_EXCEPTION" text="[错误] {HERO} 回退加入玩家队伍失败: {DETAIL}" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_EXT_ARMY" text="玩家家族为空，跳过外部军团限制。" />
+    <string id="CME_DBG_EXT_ARMY_ALLOW_OWN" text="队伍 {PARTY} 处于玩家自有军团，允许保留" />
+    <string id="CME_DBG_EXT_ARMY_FORCED_LEAVE" text="已强制队伍 {PARTY} 离开外部军团" />
+    <string id="CME_DBG_EXT_ARMY_BLOCKED_SUMMARY" text="外部军团限制执行结果: 已拦截 {COUNT} 支队伍" />
+    <string id="CME_ERR_EXT_ARMY_REMOVE_FAILED" text="[错误] 将队伍移出军团失败: {DETAIL}" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_REINFORCE" text="玩家家族为空，跳过自动补兵。" />
+    <string id="CME_DBG_REINFORCE_LOW_STRENGTH_FOUND" text="发现低兵力队伍 {LOW_COUNT} 支 / 家族队伍总数 {TOTAL_COUNT} 支" />
+    <string id="CME_DBG_REINFORCE_NO_OVERGARRISON" text="没有可用于抽调兵力的高驻军城堡" />
+    <string id="CME_DBG_REINFORCE_PARTY_RESULT" text="已为队伍 {PARTY} 补充 {COUNT} 名士兵" />
+    <string id="CME_DBG_PLAYER_CLAN_NULL_PRISONER_TRANSFER" text="玩家家族为空，跳过俘虏转移。" />
+    <string id="CME_DBG_PRISONER_TRANSFER_NO_CASTLE" text="没有可用于转移俘虏的城堡" />
+    <string id="CME_DBG_PRISONER_TRANSFER_PARTY_RESULT" text="已从队伍 {PARTY} 转移 {COUNT} 名俘虏" />
+    <string id="CME_ERR_REINFORCE_FAILED" text="[错误] 自动补兵失败: {DETAIL}" />
+    <string id="CME_ERR_EXTRACT_TROOPS_FAILED" text="[错误] 从驻军抽调士兵失败: {DETAIL}" />
+    <string id="CME_ERR_TRANSFER_PRISONERS_FAILED" text="[错误] 转移俘虏失败: {DETAIL}" />
+    <string id="CME_ERR_NO_CREATE_PARTY_METHOD" text="[错误] 未找到兼容的建队方法。" />
+    <string id="CME_ERR_NO_ADD_HERO_METHOD" text="[错误] 未找到兼容的 add-hero-to-party 方法。" />
     <string id="CME_INIT_FAIL" text="ClanManagerEnhanced 初始化 Harmony 失败。请检查日志。" />
   </strings>
 </base>

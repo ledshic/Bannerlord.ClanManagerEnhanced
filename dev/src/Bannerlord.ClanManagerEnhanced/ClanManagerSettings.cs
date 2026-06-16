@@ -49,7 +49,7 @@ namespace Bannerlord.ClanManagerEnhanced
         [SettingPropertyBool(
             "{=CME_AutoCreateIdleClanParty}Auto Create Party For Idle Clan Members",
             RequireRestart = false,
-            HintText = "{=CME_AutoCreateIdleClanPartyHint}Daily check: if a clan member is idle in a town tavern and party slots are available, automatically create a clan party for them.")]
+            HintText = "{=CME_AutoCreateIdleClanPartyHint}Daily check: if a clan member is idle in a town or castle and party slots are available, automatically create a clan party for them.")]
         [SettingPropertyGroup("{=CME_General}General")]
         public bool AutoCreatePartyForIdleClanMembers { get; set; } = true;
 

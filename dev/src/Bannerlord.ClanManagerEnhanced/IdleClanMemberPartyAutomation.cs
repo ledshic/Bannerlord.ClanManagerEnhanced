@@ -34,23 +34,34 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping auto party creation"));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_PLAYER_CLAN_NULL_AUTO_CREATE}Player clan is null, skipping auto party creation.").ToString()));
                 return;
             }
 
-            InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers START ==="));
-            InformationManager.DisplayMessage(new InformationMessage($"[PHASE 1] Player Clan: {playerClan.Name}, Tier: {playerClan.Tier}"));
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_AUTO_CREATE_START}=== Auto Create Party For Idle Clan Members START ===").ToString()));
+
+            var phase1ClanText = new TextObject("{=CME_DBG_PHASE1_CLAN}[PHASE 1] Player Clan: {CLAN}, Tier: {TIER}");
+            phase1ClanText.SetTextVariable("CLAN", playerClan.Name.ToString());
+            phase1ClanText.SetTextVariable("TIER", playerClan.Tier);
+            InformationManager.DisplayMessage(new InformationMessage(phase1ClanText.ToString()));
 
             if (!HasAvailableClanPartySlot(playerClan))
             {
                 var currentPartyCount = GetCurrentClanPartyCount(playerClan);
-                InformationManager.DisplayMessage(new InformationMessage($"[PHASE 1] No available party slots. Current parties (including main): {currentPartyCount}"));
-                InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers END (No party slots) ==="));
+                var noSlotText = new TextObject("{=CME_DBG_PHASE1_NO_SLOT}[PHASE 1] No available party slots. Current parties (including main): {COUNT}");
+                noSlotText.SetTextVariable("COUNT", currentPartyCount);
+                InformationManager.DisplayMessage(new InformationMessage(noSlotText.ToString()));
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_AUTO_CREATE_END_NO_SLOT}=== Auto Create Party For Idle Clan Members END (No party slots) ===").ToString()));
                 return;
             }
 
             var allClanHeroes = Hero.AllAliveHeroes.Where(h => h.Clan == playerClan).ToList();
-            InformationManager.DisplayMessage(new InformationMessage($"[PHASE 2] Total clan members (alive): {allClanHeroes.Count}"));
+            var phase2CountText = new TextObject("{=CME_DBG_PHASE2_TOTAL_MEMBERS}[PHASE 2] Total clan members (alive): {COUNT}");
+            phase2CountText.SetTextVariable("COUNT", allClanHeroes.Count);
+            InformationManager.DisplayMessage(new InformationMessage(phase2CountText.ToString()));
 
             var idleCount = 0;
             var createdCount = 0;
@@ -61,7 +72,7 @@ namespace Bannerlord.ClanManagerEnhanced
 
             foreach (var hero in Hero.AllAliveHeroes)
             {
-                var checkResult = IsIdleTavernClanMemberWithDetails(hero, playerClan);
+                var checkResult = EvaluateIdleClanMemberWithDetails(hero, playerClan);
                 if (!checkResult.isIdle)
                 {
                     notIdleCount++;
@@ -73,7 +84,10 @@ namespace Bannerlord.ClanManagerEnhanced
                     notIdleReasons[checkResult.reason]++;
                     if (hero.Clan == playerClan)
                     {
-                        InformationManager.DisplayMessage(new InformationMessage($"[PHASE 3] [NOT_IDLE] {hero.Name}: {checkResult.reason}"));
+                        var notIdleText = new TextObject("{=CME_DBG_PHASE3_NOT_IDLE}[PHASE 3] [NOT_IDLE] {HERO}: {REASON}");
+                        notIdleText.SetTextVariable("HERO", hero.Name.ToString());
+                        notIdleText.SetTextVariable("REASON", GetIdleReasonText(checkResult.reason).ToString());
+                        InformationManager.DisplayMessage(new InformationMessage(notIdleText.ToString()));
                     }
 
                     continue;
@@ -81,50 +95,113 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 idleCount++;
                 idleHeroesList.Add(hero);
-                InformationManager.DisplayMessage(new InformationMessage($"[PHASE 3] [IDLE_FOUND] {hero.Name} in {hero.CurrentSettlement?.Name}"));
+                var idleFoundText = new TextObject("{=CME_DBG_PHASE3_IDLE_FOUND}[PHASE 3] [IDLE_FOUND] {HERO} in {SETTLEMENT}");
+                idleFoundText.SetTextVariable("HERO", hero.Name.ToString());
+                idleFoundText.SetTextVariable("SETTLEMENT", hero.CurrentSettlement?.Name?.ToString() ?? "-");
+                InformationManager.DisplayMessage(new InformationMessage(idleFoundText.ToString()));
+
+                if (!checkResult.canCreateParty)
+                {
+                    var createSkippedText = new TextObject("{=CME_DBG_PHASE4_CREATE_SKIPPED_REASON}[PHASE 4] [CREATE_SKIPPED] {HERO}: {REASON}");
+                    createSkippedText.SetTextVariable("HERO", hero.Name.ToString());
+                    createSkippedText.SetTextVariable("REASON", GetIdleReasonText(checkResult.reason).ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(createSkippedText.ToString()));
+
+                    if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
+                    {
+                        joinedPlayerPartyCount++;
+                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                    }
+
+                    continue;
+                }
 
                 if (!HasAvailableClanPartySlot(playerClan))
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] Party slots filled. Found {idleCount} idle members, created {createdCount} parties. Stopping iteration."));
-                    break;
+                    var createSkippedNoSlotText = new TextObject("{=CME_DBG_PHASE4_CREATE_SKIPPED_NO_SLOT}[PHASE 4] [CREATE_SKIPPED] No available party slot for {HERO}");
+                    createSkippedNoSlotText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(createSkippedNoSlotText.ToString()));
+
+                    if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
+                    {
+                        joinedPlayerPartyCount++;
+                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
+                    }
+
+                    continue;
                 }
 
                 if (TryCreatePartyForHero(hero))
                 {
                     createdCount++;
-                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [SUCCESS] Created party for {hero.Name}"));
+                    var createSuccessText = new TextObject("{=CME_DBG_PHASE4_CREATE_SUCCESS}[PHASE 4] [SUCCESS] Created party for {HERO}");
+                    createSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(createSuccessText.ToString()));
                 }
                 else
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [FAILED] Failed to create party for {hero.Name}"));
+                    var createFailedText = new TextObject("{=CME_DBG_PHASE4_CREATE_FAILED}[PHASE 4] [FAILED] Failed to create party for {HERO}");
+                    createFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(createFailedText.ToString()));
 
                     if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
                     {
                         joinedPlayerPartyCount++;
-                        InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [FALLBACK_SUCCESS] Moved {hero.Name} to player party"));
+                        var fallbackSuccessText = new TextObject("{=CME_DBG_PHASE4_FALLBACK_SUCCESS}[PHASE 4] [FALLBACK_SUCCESS] Moved {HERO} to player party");
+                        fallbackSuccessText.SetTextVariable("HERO", hero.Name.ToString());
+                        InformationManager.DisplayMessage(new InformationMessage(fallbackSuccessText.ToString()));
                     }
                 }
             }
 
-            InformationManager.DisplayMessage(new InformationMessage("=== DETAILED SUMMARY ==="));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Total heroes checked: {Hero.AllAliveHeroes.Count()}"));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Clan members (alive): {allClanHeroes.Count}"));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Idle clan members found: {idleCount}"));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Non-idle heroes checked: {notIdleCount}"));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Parties created: {createdCount}"));
-            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Fallback joins to player party: {joinedPlayerPartyCount}"));
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_SUMMARY_HEADER}=== DETAILED SUMMARY ===").ToString()));
+
+            var summaryTotalText = new TextObject("{=CME_DBG_SUMMARY_TOTAL_HEROES}[SUMMARY] Total heroes checked: {COUNT}");
+            summaryTotalText.SetTextVariable("COUNT", Hero.AllAliveHeroes.Count());
+            InformationManager.DisplayMessage(new InformationMessage(summaryTotalText.ToString()));
+
+            var summaryClanText = new TextObject("{=CME_DBG_SUMMARY_CLAN_MEMBERS}[SUMMARY] Clan members (alive): {COUNT}");
+            summaryClanText.SetTextVariable("COUNT", allClanHeroes.Count);
+            InformationManager.DisplayMessage(new InformationMessage(summaryClanText.ToString()));
+
+            var summaryIdleText = new TextObject("{=CME_DBG_SUMMARY_IDLE_FOUND}[SUMMARY] Idle clan members found: {COUNT}");
+            summaryIdleText.SetTextVariable("COUNT", idleCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryIdleText.ToString()));
+
+            var summaryNonIdleText = new TextObject("{=CME_DBG_SUMMARY_NON_IDLE}[SUMMARY] Non-idle heroes checked: {COUNT}");
+            summaryNonIdleText.SetTextVariable("COUNT", notIdleCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryNonIdleText.ToString()));
+
+            var summaryCreatedText = new TextObject("{=CME_DBG_SUMMARY_CREATED}[SUMMARY] Parties created: {COUNT}");
+            summaryCreatedText.SetTextVariable("COUNT", createdCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryCreatedText.ToString()));
+
+            var summaryFallbackText = new TextObject("{=CME_DBG_SUMMARY_FALLBACK}[SUMMARY] Fallback joins to player party: {COUNT}");
+            summaryFallbackText.SetTextVariable("COUNT", joinedPlayerPartyCount);
+            InformationManager.DisplayMessage(new InformationMessage(summaryFallbackText.ToString()));
 
             foreach (var kvp in notIdleReasons.OrderByDescending(x => x.Value))
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[BREAKDOWN] {kvp.Key}: {kvp.Value} heroes"));
+                var breakdownText = new TextObject("{=CME_DBG_SUMMARY_BREAKDOWN}[BREAKDOWN] {REASON}: {COUNT} heroes");
+                breakdownText.SetTextVariable("REASON", GetIdleReasonText(kvp.Key).ToString());
+                breakdownText.SetTextVariable("COUNT", kvp.Value);
+                InformationManager.DisplayMessage(new InformationMessage(breakdownText.ToString()));
             }
 
             if (idleHeroesList.Count > 0)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[IDLE_LIST] Idle members: {string.Join(", ", idleHeroesList.Select(h => h.Name.ToString()))}"));
+                var idleListText = new TextObject("{=CME_DBG_SUMMARY_IDLE_LIST}[IDLE_LIST] Idle members: {LIST}");
+                idleListText.SetTextVariable("LIST", string.Join(", ", idleHeroesList.Select(h => h.Name.ToString())));
+                InformationManager.DisplayMessage(new InformationMessage(idleListText.ToString()));
             }
 
-            InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers END ==="));
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_AUTO_CREATE_END}=== Auto Create Party For Idle Clan Members END ===").ToString()));
 
             if (!settings.ShowNotifications)
             {
@@ -133,14 +210,14 @@ namespace Bannerlord.ClanManagerEnhanced
 
             if (idleCount > 0)
             {
-                var idleText = new TextObject("{=CME_IDLE_MEMBERS_FOUND}Found {COUNT} idle clan member(s) in towns.");
+                var idleText = new TextObject("{=CME_IDLE_MEMBERS_FOUND}Found {COUNT} idle clan member(s) in settlements.");
                 idleText.SetTextVariable("COUNT", idleCount);
                 InformationManager.DisplayMessage(new InformationMessage(idleText.ToString()));
             }
 
             if (createdCount > 0)
             {
-                var createdText = new TextObject("{=CME_AUTO_CREATE_PARTY_CREATED}Automatically created {COUNT} clan party(ies) from idle tavern members.");
+                var createdText = new TextObject("{=CME_AUTO_CREATE_PARTY_CREATED}Automatically created {COUNT} clan party(ies) from idle settlement members.");
                 createdText.SetTextVariable("COUNT", createdCount);
                 InformationManager.DisplayMessage(new InformationMessage(createdText.ToString()));
             }
@@ -153,83 +230,124 @@ namespace Bannerlord.ClanManagerEnhanced
             }
         }
 
-        private static (bool isIdle, string reason) IsIdleTavernClanMemberWithDetails(Hero? hero, Clan playerClan)
+        private static (bool isIdle, bool canCreateParty, string reason) EvaluateIdleClanMemberWithDetails(Hero? hero, Clan playerClan)
         {
             if (hero == null)
             {
-                return (false, "hero is null");
+                return (false, false, "CME_REASON_HERO_NULL");
             }
 
             if (hero == Hero.MainHero)
             {
-                return (false, "is main hero");
+                return (false, false, "CME_REASON_IS_MAIN_HERO");
             }
 
             if (hero.Clan != playerClan)
             {
-                return (false, $"clan mismatch: hero.Clan={hero.Clan?.Name?.ToString() ?? "null"}, playerClan={playerClan.Name}");
+                return (false, false, "CME_REASON_CLAN_MISMATCH");
             }
 
             if (hero.IsDead)
             {
-                return (false, "hero is dead");
+                return (false, false, "CME_REASON_HERO_DEAD");
             }
 
             if (hero.IsChild)
             {
-                return (false, "hero is a child");
+                return (false, false, "CME_REASON_HERO_CHILD");
             }
 
             if (hero.IsPrisoner)
             {
-                return (false, "hero is a prisoner");
+                return (false, false, "CME_REASON_HERO_PRISONER");
             }
 
             if (hero.PartyBelongedTo != null)
             {
-                return (false, $"already in party: {hero.PartyBelongedTo.Name}");
+                return (false, false, "CME_REASON_ALREADY_IN_PARTY");
             }
 
             if (hero.GovernorOf != null)
             {
-                return (false, $"is governor of: {hero.GovernorOf.Name}");
-            }
-
-            if (!hero.CanLeadParty())
-            {
-                return (false, "cannot lead party");
+                return (false, false, "CME_REASON_IS_GOVERNOR");
             }
 
             var settlement = hero.CurrentSettlement;
             if (settlement == null)
             {
-                return (false, "current settlement is null");
+                return (false, false, "CME_REASON_NO_SETTLEMENT");
             }
 
-            if (!settlement.IsTown)
+            if (!settlement.IsTown && !settlement.IsCastle)
             {
-                return (false, $"settlement is not a town: {settlement.Name}");
+                return (false, false, "CME_REASON_NOT_TOWN_CASTLE");
             }
 
             if (TryGetBoolProperty(hero, "StayingInSettlement", out var stayingInSettlement) && !stayingInSettlement)
             {
-                return (false, "StayingInSettlement=false");
+                return (false, false, "CME_REASON_NOT_STAYING_IN_SETTLEMENT");
             }
 
-            return (true, $"IDLE in town {settlement.Name}");
+            if (!hero.CanLeadParty())
+            {
+                return (true, false, "CME_REASON_CANNOT_LEAD_PARTY");
+            }
+
+            return (true, true, "CME_REASON_IDLE_SETTLEMENT");
+        }
+
+        private static TextObject GetIdleReasonText(string reasonId)
+        {
+            switch (reasonId)
+            {
+                case "CME_REASON_HERO_NULL":
+                    return new TextObject("{=CME_REASON_HERO_NULL}hero is null");
+                case "CME_REASON_IS_MAIN_HERO":
+                    return new TextObject("{=CME_REASON_IS_MAIN_HERO}is main hero");
+                case "CME_REASON_CLAN_MISMATCH":
+                    return new TextObject("{=CME_REASON_CLAN_MISMATCH}clan mismatch");
+                case "CME_REASON_HERO_DEAD":
+                    return new TextObject("{=CME_REASON_HERO_DEAD}hero is dead");
+                case "CME_REASON_HERO_CHILD":
+                    return new TextObject("{=CME_REASON_HERO_CHILD}hero is a child");
+                case "CME_REASON_HERO_PRISONER":
+                    return new TextObject("{=CME_REASON_HERO_PRISONER}hero is a prisoner");
+                case "CME_REASON_ALREADY_IN_PARTY":
+                    return new TextObject("{=CME_REASON_ALREADY_IN_PARTY}already in party");
+                case "CME_REASON_IS_GOVERNOR":
+                    return new TextObject("{=CME_REASON_IS_GOVERNOR}is governor");
+                case "CME_REASON_NO_SETTLEMENT":
+                    return new TextObject("{=CME_REASON_NO_SETTLEMENT}current settlement is null");
+                case "CME_REASON_NOT_TOWN_CASTLE":
+                    return new TextObject("{=CME_REASON_NOT_TOWN_CASTLE}settlement is not a town/castle");
+                case "CME_REASON_NOT_STAYING_IN_SETTLEMENT":
+                    return new TextObject("{=CME_REASON_NOT_STAYING_IN_SETTLEMENT}staying in settlement is false");
+                case "CME_REASON_CANNOT_LEAD_PARTY":
+                    return new TextObject("{=CME_REASON_CANNOT_LEAD_PARTY}cannot lead party");
+                case "CME_REASON_IDLE_SETTLEMENT":
+                    return new TextObject("{=CME_REASON_IDLE_SETTLEMENT}idle in settlement");
+                default:
+                    return new TextObject(reasonId);
+            }
         }
 
         private static bool HasAvailableClanPartySlot(Clan playerClan)
         {
             if (!TryGetClanPartyLimit(playerClan, out var partyLimit))
             {
-                InformationManager.DisplayMessage(new InformationMessage($"Could not determine party limit for clan {playerClan.Name}, assuming unlimited"));
+                var limitUnknownText = new TextObject("{=CME_DBG_PARTY_LIMIT_UNKNOWN}Could not determine party limit for clan {CLAN}, assuming unlimited");
+                limitUnknownText.SetTextVariable("CLAN", playerClan.Name.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(limitUnknownText.ToString()));
                 return true;
             }
 
             var currentPartyCount = GetCurrentClanPartyCount(playerClan);
 
-            InformationManager.DisplayMessage(new InformationMessage($"Party slot check for {playerClan.Name}: {currentPartyCount}/{partyLimit} slots used (main party included)"));
+            var slotCheckText = new TextObject("{=CME_DBG_PARTY_SLOT_CHECK}Party slot check for {CLAN}: {CURRENT}/{LIMIT} slots used (main party included)");
+            slotCheckText.SetTextVariable("CLAN", playerClan.Name.ToString());
+            slotCheckText.SetTextVariable("CURRENT", currentPartyCount);
+            slotCheckText.SetTextVariable("LIMIT", partyLimit);
+            InformationManager.DisplayMessage(new InformationMessage(slotCheckText.ToString()));
             return currentPartyCount < partyLimit;
         }
 
@@ -290,14 +408,18 @@ namespace Bannerlord.ClanManagerEnhanced
                 var method = ClanPartyActionResolver.GetOrResolveCreatePartyMethod();
                 if (method == null)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"No create party method found for hero {hero.Name}"));
+                    var noCreateMethodText = new TextObject("{=CME_DBG_NO_CREATE_METHOD}No create party method found for hero {HERO}");
+                    noCreateMethodText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(noCreateMethodText.ToString()));
                     return false;
                 }
 
                 var args = ClanPartyActionResolver.BuildArgumentsForCreatePartyMethod(method, hero);
                 if (args == null)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"Failed to build arguments for create party method for hero {hero.Name}"));
+                    var buildCreateArgsFailedText = new TextObject("{=CME_DBG_CREATE_ARGS_BUILD_FAILED}Failed to build arguments for create party method for hero {HERO}");
+                    buildCreateArgsFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(buildCreateArgsFailedText.ToString()));
                     return false;
                 }
 
@@ -312,7 +434,10 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to create clan party for {hero.Name}: {ex}"));
+                var createExceptionText = new TextObject("{=CME_ERR_CREATE_PARTY_EXCEPTION}[ERROR] Failed to create clan party for {HERO}: {DETAIL}");
+                createExceptionText.SetTextVariable("HERO", hero.Name.ToString());
+                createExceptionText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(createExceptionText.ToString()));
                 return false;
             }
         }
@@ -328,7 +453,9 @@ namespace Bannerlord.ClanManagerEnhanced
             var settlement = hero.CurrentSettlement;
             if (settlement == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"CreateLordParty prerequisites missing for {hero.Name}: settlement=false"));
+                var lordPrereqText = new TextObject("{=CME_DBG_CREATE_LORD_PREREQ_MISSING}CreateLordParty prerequisites missing for {HERO}: settlement=false");
+                lordPrereqText.SetTextVariable("HERO", hero.Name.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(lordPrereqText.ToString()));
                 return true;
             }
 
@@ -354,7 +481,10 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"CreateLordParty failed for {hero.Name}: {ex.Message}"));
+                var lordCreateFailedText = new TextObject("{=CME_ERR_CREATE_LORD_FAILED}CreateLordParty failed for {HERO}: {DETAIL}");
+                lordCreateFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                lordCreateFailedText.SetTextVariable("DETAIL", ex.Message);
+                InformationManager.DisplayMessage(new InformationMessage(lordCreateFailedText.ToString()));
                 return false;
             }
         }
@@ -377,7 +507,9 @@ namespace Bannerlord.ClanManagerEnhanced
                 var mainParty = MobileParty.MainParty;
                 if (mainParty == null)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"Player main party is null, cannot move {hero.Name}"));
+                    var mainPartyNullText = new TextObject("{=CME_DBG_MAIN_PARTY_NULL}Player main party is null, cannot move {HERO}");
+                    mainPartyNullText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(mainPartyNullText.ToString()));
                     return false;
                 }
 
@@ -389,14 +521,18 @@ namespace Bannerlord.ClanManagerEnhanced
                 var method = ClanPartyActionResolver.GetOrResolveAddHeroToPartyMethod();
                 if (method == null)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"No add-hero-to-party method found for fallback join: {hero.Name}"));
+                    var noAddMethodText = new TextObject("{=CME_DBG_NO_ADD_HERO_METHOD}No add-hero-to-party method found for fallback join: {HERO}");
+                    noAddMethodText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(noAddMethodText.ToString()));
                     return false;
                 }
 
                 var args = ClanPartyActionResolver.BuildArgumentsForAddHeroToPartyMethod(method, hero, mainParty);
                 if (args == null)
                 {
-                    InformationManager.DisplayMessage(new InformationMessage($"Failed to build add-hero arguments for {hero.Name}"));
+                    var buildAddArgsFailedText = new TextObject("{=CME_DBG_ADD_HERO_ARGS_BUILD_FAILED}Failed to build add-hero arguments for {HERO}");
+                    buildAddArgsFailedText.SetTextVariable("HERO", hero.Name.ToString());
+                    InformationManager.DisplayMessage(new InformationMessage(buildAddArgsFailedText.ToString()));
                     return false;
                 }
 
@@ -405,7 +541,10 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed fallback join to player party for {hero.Name}: {ex}"));
+                var fallbackExceptionText = new TextObject("{=CME_ERR_FALLBACK_JOIN_EXCEPTION}[ERROR] Failed fallback join to player party for {HERO}: {DETAIL}");
+                fallbackExceptionText.SetTextVariable("HERO", hero.Name.ToString());
+                fallbackExceptionText.SetTextVariable("DETAIL", ex.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(fallbackExceptionText.ToString()));
                 return false;
             }
         }
@@ -501,4 +640,3 @@ namespace Bannerlord.ClanManagerEnhanced
         }
     }
 }
-
