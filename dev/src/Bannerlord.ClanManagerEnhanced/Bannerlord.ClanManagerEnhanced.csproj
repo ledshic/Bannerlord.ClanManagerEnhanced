@@ -1,8 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Set this to your local Bannerlord installation (the folder that contains bin\Win64_Shipping_Client).
+         Override examples:
+           - Windows:   dotnet build -p:GameFolder="C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord"
+           - macOS:     dotnet build -p:GameFolder="$HOME/Library/Application Support/Steam/steamapps/common/Mount &amp; Blade II Bannerlord"
+           - Or set the GAMEFOLDER environment variable before building. -->
     <GameFolder Condition="'$(GameFolder)' == ''">D:\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
     <GameBinWin64>$(GameFolder)\bin\Win64_Shipping_Client</GameBinWin64>
+
+    <!-- Recommended: Set this when building for a specific game version -->
+    <!-- <GameVersion>1.2.12</GameVersion> -->
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -12,7 +20,7 @@
     <AssemblyName>Bannerlord.ClanManagerEnhanced</AssemblyName>
     <RootNamespace>Bannerlord.ClanManagerEnhanced</RootNamespace>
     <Version>1.0.0</Version>
-    <Authors>YourName</Authors>
+    <Authors>ledshic</Authors>
     <Product>Bannerlord.ClanManagerEnhanced</Product>
     <Description>Clan-focused campaign quality-of-life module scaffold with Harmony + MCM integration.</Description>
 

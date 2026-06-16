@@ -8,12 +8,18 @@
   <MultiplayerModule value="false"/>
   <Official value="false"/>
 
+  <!-- Required dependencies. Order matters for loading. -->
   <DependedModules>
+    <!-- Core game modules -->
     <DependedModule Id="Native"/>
     <DependedModule Id="SandBoxCore"/>
     <DependedModule Id="Sandbox"/>
+    <!-- StoryMode is optional for people playing without the main story -->
     <DependedModule Id="StoryMode" Optional="true"/>
 
+    <!-- BUTR / MCM stack - Harmony MUST be first among these.
+         Use the latest compatible versions of these libraries for your Bannerlord version
+         (recommended via Steam Workshop or Nexus). -->
     <DependedModule Id="Bannerlord.Harmony"/>
     <DependedModule Id="Bannerlord.ButterLib"/>
     <DependedModule Id="Bannerlord.UIExtenderEx"/>
@@ -23,12 +29,26 @@
   <SubModules>
     <SubModule>
       <Name value="Bannerlord.ClanManagerEnhanced"/>
+      <!-- The DLL that contains your SubModule class -->
       <DLLName value="Bannerlord.ClanManagerEnhanced.dll"/>
+      <!-- Fully qualified class name: Namespace.Class -->
       <SubModuleClassType value="Bannerlord.ClanManagerEnhanced.SubModule"/>
       <Tags>
+        <!-- Dedicated servers: none (this is a singleplayer QoL mod) -->
         <Tag key="DedicatedServerType" value="none"/>
+        <!-- Render mode element: false for most campaign mods -->
         <Tag key="IsNoRenderModeElement" value="false"/>
       </Tags>
     </SubModule>
   </SubModules>
+
+  <!--
+    If your mod ships custom XML data (new troops, items, etc.), declare them here.
+    Example:
+    <Xmls>
+      <XmlNode>
+        <XmlName id="NPCCharacters" path="troop_changes"/>
+      </XmlNode>
+    </Xmls>
+  -->
 </Module>
