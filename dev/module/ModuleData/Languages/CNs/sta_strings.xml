@@ -16,6 +16,7 @@
     <string id="CME_AutoCreateIdleClanParty" text="为闲置家族成员自动创建队伍" />
     <string id="CME_AutoCreateIdleClanPartyHint" text="每日检测：当家族成员闲置在城镇酒馆且家族仍有队伍槽位时，自动为其创建家族队伍。" />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced 每日检查已执行。" />
+    <string id="CME_IDLE_MEMBERS_FOUND" text="在城镇中检测到 {COUNT} 个闲置家族成员。" />
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="已阻止 {COUNT} 支玩家家族队伍留在非玩家军团。" />
     <string id="CME_AUTO_CREATE_PARTY_CREATED" text="已为闲置酒馆成员自动创建 {COUNT} 支家族队伍。" />
     <string id="CME_PartyReinforce" text="自动补充低兵力队伍" />

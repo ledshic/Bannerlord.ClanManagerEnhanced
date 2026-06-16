@@ -54,6 +54,13 @@ namespace Bannerlord.ClanManagerEnhanced
         public bool AutoCreatePartyForIdleClanMembers { get; set; } = true;
 
         [SettingPropertyBool(
+            "{=CME_EnableDebugLogging}Enable Debug Logging",
+            RequireRestart = false,
+            HintText = "{=CME_EnableDebugLoggingHint}Enable detailed debug logs for personnel checks and idle detection logic (written to mod logs). Useful for troubleshooting.")]
+        [SettingPropertyGroup("{=CME_General}General")]
+        public bool EnableDebugLogging { get; set; } = false;
+
+        [SettingPropertyBool(
             "{=CME_PartyReinforce}Auto Reinforce Low-Strength Parties",
             RequireRestart = false,
             HintText = "{=CME_PartyReinforceHint}Daily check: extract troops from overgarrisoned castles to reinforce parties below strength threshold.")]

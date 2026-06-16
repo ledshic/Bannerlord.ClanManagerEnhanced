@@ -16,6 +16,7 @@
     <string id="CME_AutoCreateIdleClanParty" text="Auto Create Party For Idle Clan Members" />
     <string id="CME_AutoCreateIdleClanPartyHint" text="Daily check: if a clan member is idle in a town tavern and party slots are available, automatically create a clan party for them." />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced daily check executed." />
+    <string id="CME_IDLE_MEMBERS_FOUND" text="Found {COUNT} idle clan member(s) in towns." />
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="Blocked {COUNT} player clan party(ies) from staying in a non-player army." />
     <string id="CME_AUTO_CREATE_PARTY_CREATED" text="Automatically created {COUNT} clan party(ies) from idle tavern members." />
     <string id="CME_PartyReinforce" text="Auto Reinforce Low-Strength Parties" />
