@@ -22,6 +22,24 @@
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="Blocked {COUNT} player clan party(ies) from staying in a non-player army." />
     <string id="CME_AUTO_CREATE_PARTY_CREATED" text="Automatically created {COUNT} clan party(ies) from idle tavern members." />
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="Automatically moved {COUNT} idle clan member(s) to player party after party creation failed." />
+    <string id="CME_DBG_DAILY_TICK_STARTED" text="=== Daily Tick Started ===" />
+    <string id="CME_DBG_MOD_ENABLED" text="Mod Enabled: {VALUE}" />
+    <string id="CME_DBG_DEBUG_ENABLED" text="Debug Logging Enabled: {VALUE}" />
+    <string id="CME_DBG_ENFORCE_EXT_ARMY" text="Enforcing external army restriction..." />
+    <string id="CME_DBG_RUN_AUTO_CREATE" text="Running auto-create party for idle clan members..." />
+    <string id="CME_DBG_RUN_REINFORCE" text="Running auto-reinforce parties..." />
+    <string id="CME_DBG_RUN_TRANSFER_PRISONERS" text="Running auto-transfer excess prisoners..." />
+    <string id="CME_DBG_DAILY_TICK_COMPLETED" text="=== Daily Tick Completed ===" />
+    <string id="CME_DBG_MEMBER_SCAN_START" text="=== Clan Member Status Scan ===" />
+    <string id="CME_DBG_STATUS_PLAYER" text="player" />
+    <string id="CME_DBG_STATUS_PRISONER" text="prisoner" />
+    <string id="CME_DBG_STATUS_GOVERNOR" text="governor of {SETTLEMENT}" />
+    <string id="CME_DBG_STATUS_IN_PLAYER_PARTY" text="in player party" />
+    <string id="CME_DBG_STATUS_IN_PARTY" text="in party: {PARTY}" />
+    <string id="CME_DBG_STATUS_IDLE_SETTLEMENT" text="idle in settlement" />
+    <string id="CME_DBG_STATUS_UNKNOWN" text="unknown" />
+    <string id="CME_DBG_MEMBER_LINE" text="[MEMBER] {NAME} | {LOCATION} | {STATUS}" />
+    <string id="CME_DBG_MEMBER_SCAN_END" text="=== Clan Member Status Scan END ===" />
     <string id="CME_PartyReinforce" text="Auto Reinforce Low-Strength Parties" />
     <string id="CME_PartyReinforceHint" text="Daily check: extract troops from overgarrisoned castles to reinforce parties below strength threshold." />
     <string id="CME_PartyStrengthThreshold" text="Party Troop Strength Threshold %" />

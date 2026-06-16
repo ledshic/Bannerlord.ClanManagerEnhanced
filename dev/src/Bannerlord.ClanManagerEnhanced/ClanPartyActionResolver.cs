@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
@@ -73,7 +73,7 @@ namespace Bannerlord.ClanManagerEnhanced
                 }
             }
 
-            CmeDiagnostics.DebugLog("[ERROR] No compatible create-party action method found.");
+            InformationManager.DisplayMessage(new InformationMessage("[ERROR] No compatible create-party action method found."));
             Debug.Print("[ClanManagerEnhanced] No compatible create-party action method found.");
             return null;
         }
@@ -122,7 +122,7 @@ namespace Bannerlord.ClanManagerEnhanced
                 }
             }
 
-            CmeDiagnostics.DebugLog("[ERROR] No compatible add-hero-to-party action method found.");
+            InformationManager.DisplayMessage(new InformationMessage("[ERROR] No compatible add-hero-to-party action method found."));
             Debug.Print("[ClanManagerEnhanced] No compatible add-hero-to-party action method found.");
             return null;
         }
@@ -303,3 +303,4 @@ namespace Bannerlord.ClanManagerEnhanced
         }
     }
 }
+

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
@@ -17,7 +17,7 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                CmeDiagnostics.DebugLog("PlayerClan is null, skipping reinforcement");
+                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping reinforcement"));
                 return;
             }
 
@@ -25,7 +25,7 @@ namespace Bannerlord.ClanManagerEnhanced
                 .Where(p => ClanPartyFilters.ShouldCheckParty(p, playerClan) && IsPartyBelowStrengthThreshold(p, settings))
                 .ToList();
 
-            CmeDiagnostics.DebugLog($"Found {lowStrengthParties.Count} low-strength parties out of {MobileParty.All.Count(p => ClanPartyFilters.ShouldCheckParty(p, playerClan))} clan parties");
+            InformationManager.DisplayMessage(new InformationMessage($"Found {lowStrengthParties.Count} low-strength parties out of {MobileParty.All.Count(p => ClanPartyFilters.ShouldCheckParty(p, playerClan))} clan parties"));
 
             if (lowStrengthParties.Count == 0)
             {
@@ -42,7 +42,7 @@ namespace Bannerlord.ClanManagerEnhanced
 
             if (overgarrisonedCastles.Count == 0)
             {
-                CmeDiagnostics.DebugLog("No overgarrisoned castles available for troop extraction");
+                InformationManager.DisplayMessage(new InformationMessage("No overgarrisoned castles available for troop extraction"));
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 var reinforcedCount = ExtractAndReinforceParty(party, overgarrisonedCastles, settings);
                 totalReinforced += reinforcedCount;
-                CmeDiagnostics.DebugLog($"Reinforced party {party.Name} with {reinforcedCount} troops");
+                InformationManager.DisplayMessage(new InformationMessage($"Reinforced party {party.Name} with {reinforcedCount} troops"));
             }
 
             if (totalReinforced > 0 && settings.ShowNotifications)
@@ -72,7 +72,7 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                CmeDiagnostics.DebugLog("PlayerClan is null, skipping prisoner transfer");
+                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping prisoner transfer"));
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace Bannerlord.ClanManagerEnhanced
 
             if (castles.Count == 0)
             {
-                CmeDiagnostics.DebugLog("No castles available for prisoner transfer");
+                InformationManager.DisplayMessage(new InformationMessage("No castles available for prisoner transfer"));
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 var transferredCount = TransferPrisonersToClosestCastle(party, castles);
                 totalTransferred += transferredCount;
-                CmeDiagnostics.DebugLog($"Transferred {transferredCount} prisoners from party {party.Name}");
+                InformationManager.DisplayMessage(new InformationMessage($"Transferred {transferredCount} prisoners from party {party.Name}"));
             }
 
             if (totalTransferred > 0 && settings.ShowNotifications)
@@ -216,7 +216,7 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed to reinforce party: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to reinforce party: {ex}"));
                 return 0;
             }
         }
@@ -271,7 +271,7 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed to extract troops from garrison: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to extract troops from garrison: {ex}"));
                 return 0;
             }
         }
@@ -329,9 +329,10 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed to transfer prisoners: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to transfer prisoners: {ex}"));
                 return 0;
             }
         }
     }
 }
+

@@ -1,4 +1,4 @@
-using TaleWorlds.CampaignSystem;
+﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -27,31 +27,47 @@ namespace Bannerlord.ClanManagerEnhanced
                 return;
             }
 
-            CmeDiagnostics.DebugLog("=== Daily Tick Started ===");
-            CmeDiagnostics.DebugLog($"Mod Enabled: {settings.EnableMod}");
-            CmeDiagnostics.DebugLog($"Debug Logging Enabled: {settings.EnableDebugLogging}");
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_DAILY_TICK_STARTED}=== Daily Tick Started ===").ToString()));
+
+            var modEnabledText = new TextObject("{=CME_DBG_MOD_ENABLED}Mod Enabled: {VALUE}");
+            modEnabledText.SetTextVariable("VALUE", settings.EnableMod ? "true" : "false");
+            InformationManager.DisplayMessage(new InformationMessage(modEnabledText.ToString()));
+
+            var debugEnabledText = new TextObject("{=CME_DBG_DEBUG_ENABLED}Debug Logging Enabled: {VALUE}");
+            debugEnabledText.SetTextVariable("VALUE", settings.EnableDebugLogging ? "true" : "false");
+            InformationManager.DisplayMessage(new InformationMessage(debugEnabledText.ToString()));
+
+            if (settings.EnableDebugLogging)
+            {
+                LogClanMemberStatus();
+            }
 
             if (!settings.AllowPlayerClanPartiesJoinExternalArmies)
             {
-                CmeDiagnostics.DebugLog("Enforcing external army restriction...");
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_ENFORCE_EXT_ARMY}Enforcing external army restriction...").ToString()));
                 _externalArmyRestrictionService.EnforceExternalArmyRestriction(settings);
             }
 
             if (settings.AutoCreatePartyForIdleClanMembers)
             {
-                CmeDiagnostics.DebugLog("Running auto-create party for idle clan members...");
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_RUN_AUTO_CREATE}Running auto-create party for idle clan members...").ToString()));
                 _idleClanMemberPartyAutomation.AutoCreatePartyForIdleClanMembers(settings);
             }
 
             if (settings.AutoReinforceParties)
             {
-                CmeDiagnostics.DebugLog("Running auto-reinforce parties...");
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_RUN_REINFORCE}Running auto-reinforce parties...").ToString()));
                 _clanLogisticsService.ReinforceLowStrengthParties(settings);
             }
 
             if (settings.AutoTransferExcessPrisoners)
             {
-                CmeDiagnostics.DebugLog("Running auto-transfer excess prisoners...");
+                InformationManager.DisplayMessage(new InformationMessage(
+                    new TextObject("{=CME_DBG_RUN_TRANSFER_PRISONERS}Running auto-transfer excess prisoners...").ToString()));
                 _clanLogisticsService.TransferExcessPrisonersTodungeons(settings);
             }
 
@@ -61,7 +77,76 @@ namespace Bannerlord.ClanManagerEnhanced
                     new TextObject("{=CME_DAILY_TICK}ClanManagerEnhanced daily check executed.").ToString()));
             }
 
-            CmeDiagnostics.DebugLog("=== Daily Tick Completed ===");
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_DAILY_TICK_COMPLETED}=== Daily Tick Completed ===").ToString()));
+        }
+
+        private static void LogClanMemberStatus()
+        {
+            var playerClan = Clan.PlayerClan;
+            if (playerClan == null)
+            {
+                return;
+            }
+
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_MEMBER_SCAN_START}=== Clan Member Status Scan ===").ToString()));
+
+            foreach (var hero in Hero.AllAliveHeroes)
+            {
+                if (hero.Clan != playerClan)
+                {
+                    continue;
+                }
+
+                var location = hero.CurrentSettlement?.Name?.ToString()
+                    ?? hero.PartyBelongedTo?.Name?.ToString()
+                    ?? "unknown location";
+
+                TextObject status;
+                if (hero == Hero.MainHero)
+                {
+                    status = new TextObject("{=CME_DBG_STATUS_PLAYER}player");
+                }
+                else if (hero.IsPrisoner)
+                {
+                    status = new TextObject("{=CME_DBG_STATUS_PRISONER}prisoner");
+                }
+                else if (hero.GovernorOf != null)
+                {
+                    status = new TextObject("{=CME_DBG_STATUS_GOVERNOR}governor of {SETTLEMENT}");
+                    status.SetTextVariable("SETTLEMENT", hero.GovernorOf.Name.ToString());
+                }
+                else if (hero.PartyBelongedTo != null)
+                {
+                    if (hero.PartyBelongedTo.IsMainParty)
+                    {
+                        status = new TextObject("{=CME_DBG_STATUS_IN_PLAYER_PARTY}in player party");
+                    }
+                    else
+                    {
+                        status = new TextObject("{=CME_DBG_STATUS_IN_PARTY}in party: {PARTY}");
+                        status.SetTextVariable("PARTY", hero.PartyBelongedTo.Name.ToString());
+                    }
+                }
+                else if (hero.CurrentSettlement != null)
+                {
+                    status = new TextObject("{=CME_DBG_STATUS_IDLE_SETTLEMENT}idle in settlement");
+                }
+                else
+                {
+                    status = new TextObject("{=CME_DBG_STATUS_UNKNOWN}unknown");
+                }
+
+                var memberLine = new TextObject("{=CME_DBG_MEMBER_LINE}[MEMBER] {NAME} | {LOCATION} | {STATUS}");
+                memberLine.SetTextVariable("NAME", hero.Name.ToString());
+                memberLine.SetTextVariable("LOCATION", location);
+                memberLine.SetTextVariable("STATUS", status.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(memberLine.ToString()));
+            }
+
+            InformationManager.DisplayMessage(new InformationMessage(
+                new TextObject("{=CME_DBG_MEMBER_SCAN_END}=== Clan Member Status Scan END ===").ToString()));
         }
 
     }

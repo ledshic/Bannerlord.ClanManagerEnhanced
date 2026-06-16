@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
@@ -33,7 +33,7 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                CmeDiagnostics.DebugLog("PlayerClan is null, skipping external army enforcement");
+                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping external army enforcement"));
                 return;
             }
 
@@ -54,18 +54,18 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 if (army.LeaderParty != null && army.LeaderParty.IsMainParty)
                 {
-                    CmeDiagnostics.DebugLog($"Party {party.Name} is in player's own army, allowing");
+                    InformationManager.DisplayMessage(new InformationMessage($"Party {party.Name} is in player's own army, allowing"));
                     continue;
                 }
 
                 if (TryForceLeaveArmy(party, army))
                 {
                     blockedCount++;
-                    CmeDiagnostics.DebugLog($"Forced party {party.Name} to leave external army");
+                    InformationManager.DisplayMessage(new InformationMessage($"Forced party {party.Name} to leave external army"));
                 }
             }
 
-            CmeDiagnostics.DebugLog($"External army enforcement: blocked {blockedCount} parties");
+            InformationManager.DisplayMessage(new InformationMessage($"External army enforcement: blocked {blockedCount} parties"));
 
             if (blockedCount > 0 && settings.ShowNotifications && ShouldShowBlockedArmyNotice())
             {
@@ -100,10 +100,11 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed to remove party from army: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to remove party from army: {ex}"));
             }
 
             return false;
         }
     }
 }
+

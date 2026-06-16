@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -34,23 +34,23 @@ namespace Bannerlord.ClanManagerEnhanced
             var playerClan = Clan.PlayerClan;
             if (playerClan == null)
             {
-                CmeDiagnostics.DebugLog("PlayerClan is null, skipping auto party creation");
+                InformationManager.DisplayMessage(new InformationMessage("PlayerClan is null, skipping auto party creation"));
                 return;
             }
 
-            CmeDiagnostics.DebugLog("=== AutoCreatePartyForIdleClanMembers START ===");
-            CmeDiagnostics.DebugLog($"[PHASE 1] Player Clan: {playerClan.Name}, Tier: {playerClan.Tier}");
+            InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers START ==="));
+            InformationManager.DisplayMessage(new InformationMessage($"[PHASE 1] Player Clan: {playerClan.Name}, Tier: {playerClan.Tier}"));
 
             if (!HasAvailableClanPartySlot(playerClan))
             {
                 var currentPartyCount = GetCurrentClanPartyCount(playerClan);
-                CmeDiagnostics.DebugLog($"[PHASE 1] No available party slots. Current parties (including main): {currentPartyCount}");
-                CmeDiagnostics.DebugLog("=== AutoCreatePartyForIdleClanMembers END (No party slots) ===");
+                InformationManager.DisplayMessage(new InformationMessage($"[PHASE 1] No available party slots. Current parties (including main): {currentPartyCount}"));
+                InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers END (No party slots) ==="));
                 return;
             }
 
             var allClanHeroes = Hero.AllAliveHeroes.Where(h => h.Clan == playerClan).ToList();
-            CmeDiagnostics.DebugLog($"[PHASE 2] Total clan members (alive): {allClanHeroes.Count}");
+            InformationManager.DisplayMessage(new InformationMessage($"[PHASE 2] Total clan members (alive): {allClanHeroes.Count}"));
 
             var idleCount = 0;
             var createdCount = 0;
@@ -73,7 +73,7 @@ namespace Bannerlord.ClanManagerEnhanced
                     notIdleReasons[checkResult.reason]++;
                     if (hero.Clan == playerClan)
                     {
-                        CmeDiagnostics.DebugLog($"[PHASE 3] [NOT_IDLE] {hero.Name}: {checkResult.reason}");
+                        InformationManager.DisplayMessage(new InformationMessage($"[PHASE 3] [NOT_IDLE] {hero.Name}: {checkResult.reason}"));
                     }
 
                     continue;
@@ -81,50 +81,50 @@ namespace Bannerlord.ClanManagerEnhanced
 
                 idleCount++;
                 idleHeroesList.Add(hero);
-                CmeDiagnostics.DebugLog($"[PHASE 3] [IDLE_FOUND] {hero.Name} in {hero.CurrentSettlement?.Name}");
+                InformationManager.DisplayMessage(new InformationMessage($"[PHASE 3] [IDLE_FOUND] {hero.Name} in {hero.CurrentSettlement?.Name}"));
 
                 if (!HasAvailableClanPartySlot(playerClan))
                 {
-                    CmeDiagnostics.DebugLog($"[PHASE 4] Party slots filled. Found {idleCount} idle members, created {createdCount} parties. Stopping iteration.");
+                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] Party slots filled. Found {idleCount} idle members, created {createdCount} parties. Stopping iteration."));
                     break;
                 }
 
                 if (TryCreatePartyForHero(hero))
                 {
                     createdCount++;
-                    CmeDiagnostics.DebugLog($"[PHASE 4] [SUCCESS] Created party for {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [SUCCESS] Created party for {hero.Name}"));
                 }
                 else
                 {
-                    CmeDiagnostics.DebugLog($"[PHASE 4] [FAILED] Failed to create party for {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [FAILED] Failed to create party for {hero.Name}"));
 
                     if (settings.AutoJoinPlayerPartyWhenCreateFails && TryJoinHeroToPlayerParty(hero))
                     {
                         joinedPlayerPartyCount++;
-                        CmeDiagnostics.DebugLog($"[PHASE 4] [FALLBACK_SUCCESS] Moved {hero.Name} to player party");
+                        InformationManager.DisplayMessage(new InformationMessage($"[PHASE 4] [FALLBACK_SUCCESS] Moved {hero.Name} to player party"));
                     }
                 }
             }
 
-            CmeDiagnostics.DebugLog("=== DETAILED SUMMARY ===");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Total heroes checked: {Hero.AllAliveHeroes.Count()}");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Clan members (alive): {allClanHeroes.Count}");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Idle clan members found: {idleCount}");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Non-idle heroes checked: {notIdleCount}");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Parties created: {createdCount}");
-            CmeDiagnostics.DebugLog($"[SUMMARY] Fallback joins to player party: {joinedPlayerPartyCount}");
+            InformationManager.DisplayMessage(new InformationMessage("=== DETAILED SUMMARY ==="));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Total heroes checked: {Hero.AllAliveHeroes.Count()}"));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Clan members (alive): {allClanHeroes.Count}"));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Idle clan members found: {idleCount}"));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Non-idle heroes checked: {notIdleCount}"));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Parties created: {createdCount}"));
+            InformationManager.DisplayMessage(new InformationMessage($"[SUMMARY] Fallback joins to player party: {joinedPlayerPartyCount}"));
 
             foreach (var kvp in notIdleReasons.OrderByDescending(x => x.Value))
             {
-                CmeDiagnostics.DebugLog($"[BREAKDOWN] {kvp.Key}: {kvp.Value} heroes");
+                InformationManager.DisplayMessage(new InformationMessage($"[BREAKDOWN] {kvp.Key}: {kvp.Value} heroes"));
             }
 
             if (idleHeroesList.Count > 0)
             {
-                CmeDiagnostics.DebugLog($"[IDLE_LIST] Idle members: {string.Join(", ", idleHeroesList.Select(h => h.Name.ToString()))}");
+                InformationManager.DisplayMessage(new InformationMessage($"[IDLE_LIST] Idle members: {string.Join(", ", idleHeroesList.Select(h => h.Name.ToString()))}"));
             }
 
-            CmeDiagnostics.DebugLog("=== AutoCreatePartyForIdleClanMembers END ===");
+            InformationManager.DisplayMessage(new InformationMessage("=== AutoCreatePartyForIdleClanMembers END ==="));
 
             if (!settings.ShowNotifications)
             {
@@ -223,13 +223,13 @@ namespace Bannerlord.ClanManagerEnhanced
         {
             if (!TryGetClanPartyLimit(playerClan, out var partyLimit))
             {
-                CmeDiagnostics.DebugLog($"Could not determine party limit for clan {playerClan.Name}, assuming unlimited");
+                InformationManager.DisplayMessage(new InformationMessage($"Could not determine party limit for clan {playerClan.Name}, assuming unlimited"));
                 return true;
             }
 
             var currentPartyCount = GetCurrentClanPartyCount(playerClan);
 
-            CmeDiagnostics.DebugLog($"Party slot check for {playerClan.Name}: {currentPartyCount}/{partyLimit} slots used (main party included)");
+            InformationManager.DisplayMessage(new InformationMessage($"Party slot check for {playerClan.Name}: {currentPartyCount}/{partyLimit} slots used (main party included)"));
             return currentPartyCount < partyLimit;
         }
 
@@ -290,14 +290,14 @@ namespace Bannerlord.ClanManagerEnhanced
                 var method = ClanPartyActionResolver.GetOrResolveCreatePartyMethod();
                 if (method == null)
                 {
-                    CmeDiagnostics.DebugLog($"No create party method found for hero {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"No create party method found for hero {hero.Name}"));
                     return false;
                 }
 
                 var args = ClanPartyActionResolver.BuildArgumentsForCreatePartyMethod(method, hero);
                 if (args == null)
                 {
-                    CmeDiagnostics.DebugLog($"Failed to build arguments for create party method for hero {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"Failed to build arguments for create party method for hero {hero.Name}"));
                     return false;
                 }
 
@@ -312,7 +312,7 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed to create clan party for {hero.Name}: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed to create clan party for {hero.Name}: {ex}"));
                 return false;
             }
         }
@@ -328,7 +328,7 @@ namespace Bannerlord.ClanManagerEnhanced
             var settlement = hero.CurrentSettlement;
             if (settlement == null)
             {
-                CmeDiagnostics.DebugLog($"CreateLordParty prerequisites missing for {hero.Name}: settlement=false");
+                InformationManager.DisplayMessage(new InformationMessage($"CreateLordParty prerequisites missing for {hero.Name}: settlement=false"));
                 return true;
             }
 
@@ -354,7 +354,7 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"CreateLordParty failed for {hero.Name}: {ex.Message}");
+                InformationManager.DisplayMessage(new InformationMessage($"CreateLordParty failed for {hero.Name}: {ex.Message}"));
                 return false;
             }
         }
@@ -377,7 +377,7 @@ namespace Bannerlord.ClanManagerEnhanced
                 var mainParty = MobileParty.MainParty;
                 if (mainParty == null)
                 {
-                    CmeDiagnostics.DebugLog($"Player main party is null, cannot move {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"Player main party is null, cannot move {hero.Name}"));
                     return false;
                 }
 
@@ -389,14 +389,14 @@ namespace Bannerlord.ClanManagerEnhanced
                 var method = ClanPartyActionResolver.GetOrResolveAddHeroToPartyMethod();
                 if (method == null)
                 {
-                    CmeDiagnostics.DebugLog($"No add-hero-to-party method found for fallback join: {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"No add-hero-to-party method found for fallback join: {hero.Name}"));
                     return false;
                 }
 
                 var args = ClanPartyActionResolver.BuildArgumentsForAddHeroToPartyMethod(method, hero, mainParty);
                 if (args == null)
                 {
-                    CmeDiagnostics.DebugLog($"Failed to build add-hero arguments for {hero.Name}");
+                    InformationManager.DisplayMessage(new InformationMessage($"Failed to build add-hero arguments for {hero.Name}"));
                     return false;
                 }
 
@@ -405,7 +405,7 @@ namespace Bannerlord.ClanManagerEnhanced
             }
             catch (Exception ex)
             {
-                CmeDiagnostics.DebugLog($"[ERROR] Failed fallback join to player party for {hero.Name}: {ex}");
+                InformationManager.DisplayMessage(new InformationMessage($"[ERROR] Failed fallback join to player party for {hero.Name}: {ex}"));
                 return false;
             }
         }
@@ -501,3 +501,4 @@ namespace Bannerlord.ClanManagerEnhanced
         }
     }
 }
+
