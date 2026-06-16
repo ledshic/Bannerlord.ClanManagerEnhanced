@@ -10,15 +10,13 @@
     <string id="CME_EnableMod" text="启用模组" />
     <string id="CME_EnableModHint" text="总开关。关闭后，不会执行任何自动家族管理逻辑。" />
     <string id="CME_ShowNotifs" text="显示提示" />
-    <string id="CME_ShowNotifsHint" text="当 ClanManagerEnhanced 执行每日检查时显示信息提示。" />
+    <string id="CME_ShowNotifsHint" text="控制 ClanManagerEnhanced 的全部游戏内消息输出（含状态、汇总与诊断信息）。" />
     <string id="CME_AllowExternalArmyJoin" text="允许玩家家族队伍加入外部军团" />
     <string id="CME_AllowExternalArmyJoinHint" text="关闭后，玩家家族队伍只能留在玩家自己的军团中，并会离开非玩家军团。" />
     <string id="CME_AutoCreateIdleClanParty" text="为闲置家族成员自动创建队伍" />
     <string id="CME_AutoCreateIdleClanPartyHint" text="每日检测：当家族成员闲置在城镇或城堡且家族仍有队伍槽位时，自动为其创建家族队伍。" />
     <string id="CME_AutoReturnOnCreateFail" text="创建队伍失败时自动加入玩家队伍" />
     <string id="CME_AutoReturnOnCreateFailHint" text="当闲置家族成员因各种原因无法创建队伍时，自动将其加入玩家主队。" />
-    <string id="CME_EnableDebugLogging" text="启用调试日志" />
-    <string id="CME_EnableDebugLoggingHint" text="启用详细调试日志，包含每日家族成员状态扫描（写入游戏日志）。可用于排查问题。" />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced 每日检查已执行。" />
     <string id="CME_IDLE_MEMBERS_FOUND" text="在聚落中检测到 {COUNT} 个闲置家族成员。" />
     <string id="CME_BLOCK_EXT_ARMY_JOIN" text="已阻止 {COUNT} 支玩家家族队伍留在非玩家军团。" />
@@ -26,7 +24,7 @@
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="因创建队伍失败，已将 {COUNT} 名闲置家族成员自动加入玩家队伍。" />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== 每日检测开始 ===" />
     <string id="CME_DBG_MOD_ENABLED" text="模组启用: {VALUE}" />
-    <string id="CME_DBG_DEBUG_ENABLED" text="调试日志启用: {VALUE}" />
+    <string id="CME_DBG_DEBUG_ENABLED" text="消息输出启用: {VALUE}" />
     <string id="CME_DBG_ENFORCE_EXT_ARMY" text="正在执行外部军团限制..." />
     <string id="CME_DBG_RUN_AUTO_CREATE" text="正在执行闲置成员自动建队..." />
     <string id="CME_DBG_RUN_REINFORCE" text="正在执行自动补兵..." />

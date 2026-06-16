@@ -9,28 +9,28 @@ namespace Bannerlord.ClanManagerEnhanced
     {
         private const double DebugMessageDisplayCooldownSeconds = 5.0;
 
-        private static bool? _debugLoggingEnabled;
+        private static bool? _messageOutputEnabled;
         private static DateTime _lastSettingsCheckUtc = DateTime.MinValue;
         private static DateTime _lastMessageDisplayUtc = DateTime.MinValue;
 
         internal static void DebugLog(string message)
         {
             var now = DateTime.UtcNow;
-            if (_debugLoggingEnabled == null || (now - _lastSettingsCheckUtc).TotalSeconds > 30)
+            if (_messageOutputEnabled == null || (now - _lastSettingsCheckUtc).TotalSeconds > 30)
             {
                 try
                 {
                     var settings = ClanManagerSettings.Instance;
-                    _debugLoggingEnabled = settings?.EnableDebugLogging ?? false;
+                    _messageOutputEnabled = settings?.ShowNotifications ?? false;
                     _lastSettingsCheckUtc = now;
                 }
                 catch
                 {
-                    _debugLoggingEnabled = false;
+                    _messageOutputEnabled = false;
                 }
             }
 
-            if (_debugLoggingEnabled == true)
+            if (_messageOutputEnabled == true)
             {
                 DebugNotify(message);
                 Debug.Print($"[ClanManagerEnhanced.Debug] {message}");

@@ -10,7 +10,7 @@
     <string id="CME_EnableMod" text="Enable Mod" />
     <string id="CME_EnableModHint" text="Master toggle. When off, no automated clan management actions will run." />
     <string id="CME_ShowNotifs" text="Show Notifications" />
-    <string id="CME_ShowNotifsHint" text="Display information messages when ClanManagerEnhanced performs daily checks." />
+    <string id="CME_ShowNotifsHint" text="Controls all ClanManagerEnhanced in-game messages, including status output, summaries, and diagnostics." />
     <string id="CME_AllowExternalArmyJoin" text="Allow Player Clan Parties Join External Armies" />
     <string id="CME_AllowExternalArmyJoinHint" text="If disabled, player clan parties can only stay in the player's own army and will leave non-player armies." />
     <string id="CME_AutoCreateIdleClanParty" text="Auto Create Party For Idle Clan Members" />
@@ -24,7 +24,7 @@
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="Automatically moved {COUNT} idle clan member(s) to player party after party creation failed." />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== Daily Tick Started ===" />
     <string id="CME_DBG_MOD_ENABLED" text="Mod Enabled: {VALUE}" />
-    <string id="CME_DBG_DEBUG_ENABLED" text="Debug Logging Enabled: {VALUE}" />
+    <string id="CME_DBG_DEBUG_ENABLED" text="Message Output Enabled: {VALUE}" />
     <string id="CME_DBG_ENFORCE_EXT_ARMY" text="Enforcing external army restriction..." />
     <string id="CME_DBG_RUN_AUTO_CREATE" text="Running auto-create party for idle clan members..." />
     <string id="CME_DBG_RUN_REINFORCE" text="Running auto-reinforce parties..." />

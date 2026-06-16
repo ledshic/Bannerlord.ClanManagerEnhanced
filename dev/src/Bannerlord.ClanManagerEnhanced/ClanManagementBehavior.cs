@@ -34,11 +34,11 @@ namespace Bannerlord.ClanManagerEnhanced
             modEnabledText.SetTextVariable("VALUE", settings.EnableMod ? "true" : "false");
             InformationManager.DisplayMessage(new InformationMessage(modEnabledText.ToString()));
 
-            var debugEnabledText = new TextObject("{=CME_DBG_DEBUG_ENABLED}Debug Logging Enabled: {VALUE}");
-            debugEnabledText.SetTextVariable("VALUE", settings.EnableDebugLogging ? "true" : "false");
+            var debugEnabledText = new TextObject("{=CME_DBG_DEBUG_ENABLED}Message Output Enabled: {VALUE}");
+            debugEnabledText.SetTextVariable("VALUE", settings.ShowNotifications ? "true" : "false");
             InformationManager.DisplayMessage(new InformationMessage(debugEnabledText.ToString()));
 
-            if (settings.EnableDebugLogging)
+            if (settings.ShowNotifications)
             {
                 LogClanMemberStatus();
             }
