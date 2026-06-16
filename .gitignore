@@ -1,34 +1,14 @@
-# Build outputs
+# .NET build intermediates
 **/bin/
 **/obj/
-out/
 
-# User-specific files
+# Bannerlord module/package outputs
+/out/
+/output/
+/_Module/
+
+# Local IDE/user files
+.vs/
+.vscode/
 *.user
 *.suo
-*.userosscache
-*.sln.docstates
-*.userprefs
-*.csproj.user
-
-# Visual Studio
-.vs/
-
-# Rider / JetBrains
-.idea/
-*.sln.iml
-
-# VS Code
-.vscode/
-
-# Mac
-.DS_Store
-Thumbs.db
-
-# Archive files
-*.zip
-
-# _Module generated content (populated by build: don't commit stale copies)
-# Keep only _Module/SubModule.xml as the hand-authored manifest.
-_Module/bin/
-_Module/ModuleData/
