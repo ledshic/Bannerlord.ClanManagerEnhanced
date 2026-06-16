@@ -1,4 +1,7 @@
 using HarmonyLib;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 
@@ -8,9 +11,25 @@ namespace Bannerlord.ClanManagerEnhanced
     /// Blocks player clan parties from joining non-player armies when the setting is disabled.
     /// This is a pre-emptive guard; behavior-level enforcement remains as a safety net.
     /// </summary>
-    [HarmonyPatch(typeof(Army), "AddParty")]
+    [HarmonyPatch(typeof(Army))]
     public static class ArmyJoinPatches
     {
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            return typeof(Army)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(m =>
+                {
+                    if (!string.Equals(m.Name, "AddParty", System.StringComparison.Ordinal))
+                    {
+                        return false;
+                    }
+
+                    var parameters = m.GetParameters();
+                    return parameters.Length > 0 && parameters[0].ParameterType == typeof(MobileParty);
+                });
+        }
+
         public static bool Prefix(Army __instance, MobileParty __0)
         {
             var settings = ClanManagerSettings.Instance;

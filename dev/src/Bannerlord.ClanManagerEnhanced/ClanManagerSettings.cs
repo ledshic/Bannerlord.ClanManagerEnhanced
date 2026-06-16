@@ -54,6 +54,13 @@ namespace Bannerlord.ClanManagerEnhanced
         public bool AutoCreatePartyForIdleClanMembers { get; set; } = true;
 
         [SettingPropertyBool(
+            "{=CME_AutoReturnOnCreateFail}Auto Join Player Party When Party Creation Fails",
+            RequireRestart = false,
+            HintText = "{=CME_AutoReturnOnCreateFailHint}When an idle clan member cannot create a party for any reason, automatically move them into the player main party.")]
+        [SettingPropertyGroup("{=CME_General}General")]
+        public bool AutoJoinPlayerPartyWhenCreateFails { get; set; } = true;
+
+        [SettingPropertyBool(
             "{=CME_EnableDebugLogging}Enable Debug Logging",
             RequireRestart = false,
             HintText = "{=CME_EnableDebugLoggingHint}Enable detailed debug logs for personnel checks and idle detection logic (written to mod logs). Useful for troubleshooting.")]
