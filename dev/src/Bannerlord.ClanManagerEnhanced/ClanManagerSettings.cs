@@ -40,13 +40,6 @@ namespace Bannerlord.ClanManagerEnhanced
         public bool ShowNotifications { get; set; } = false;
 
         [SettingPropertyBool(
-            "{=CME_AllowExternalArmyJoin}Allow Player Clan Parties Join External Armies",
-            RequireRestart = false,
-            HintText = "{=CME_AllowExternalArmyJoinHint}If disabled, player clan parties can only stay in the player's own army and will leave non-player armies.")]
-        [SettingPropertyGroup("{=CME_General}General")]
-        public bool AllowPlayerClanPartiesJoinExternalArmies { get; set; } = true;
-
-        [SettingPropertyBool(
             "{=CME_AutoCreateIdleClanParty}Auto Create Party For Idle Clan Members",
             RequireRestart = false,
             HintText = "{=CME_AutoCreateIdleClanPartyHint}Daily check: if a clan member is idle in a town or castle and party slots are available, automatically create a clan party for them.")]

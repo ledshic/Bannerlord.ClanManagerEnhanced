@@ -297,20 +297,20 @@ namespace Bannerlord.ClanManagerEnhanced
         {
             try
             {
-                if (party.PrisonRoster?.Count == 0)
+                var prisonRoster = party.PrisonRoster;
+                if (prisonRoster == null || prisonRoster.Count == 0)
                 {
                     return 0;
                 }
 
                 var bestCastle = castles.FirstOrDefault();
-                if (bestCastle?.Town?.GarrisonParty == null)
+                var garrisonParty = bestCastle?.Town?.GarrisonParty;
+                if (garrisonParty == null)
                 {
                     return 0;
                 }
 
                 var transferred = 0;
-                var prisonRoster = party.PrisonRoster;
-                var garrisonParty = bestCastle.Town.GarrisonParty;
                 var dungeonRoster = garrisonParty.PrisonRoster;
 
                 if (dungeonRoster == null)

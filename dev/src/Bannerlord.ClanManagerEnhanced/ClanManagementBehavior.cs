@@ -6,7 +6,6 @@ namespace Bannerlord.ClanManagerEnhanced
 {
     public class ClanManagementBehavior : CampaignBehaviorBase
     {
-        private readonly ExternalArmyRestrictionService _externalArmyRestrictionService = new ExternalArmyRestrictionService();
         private readonly IdleClanMemberPartyAutomation _idleClanMemberPartyAutomation = new IdleClanMemberPartyAutomation();
         private readonly ClanLogisticsService _clanLogisticsService = new ClanLogisticsService();
 
@@ -41,13 +40,6 @@ namespace Bannerlord.ClanManagerEnhanced
             if (settings.ShowNotifications)
             {
                 LogClanMemberStatus();
-            }
-
-            if (!settings.AllowPlayerClanPartiesJoinExternalArmies)
-            {
-                InformationManager.DisplayMessage(new InformationMessage(
-                    new TextObject("{=CME_DBG_ENFORCE_EXT_ARMY}Enforcing external army restriction...").ToString()));
-                _externalArmyRestrictionService.EnforceExternalArmyRestriction(settings);
             }
 
             if (settings.AutoCreatePartyForIdleClanMembers)

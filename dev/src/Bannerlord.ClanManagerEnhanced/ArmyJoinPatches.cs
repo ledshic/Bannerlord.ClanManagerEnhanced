@@ -1,62 +1,58 @@
 using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.Library;
 
 namespace Bannerlord.ClanManagerEnhanced
 {
     /// <summary>
-    /// Blocks player clan parties from joining non-player armies when the setting is disabled.
-    /// This is a pre-emptive guard; behavior-level enforcement remains as a safety net.
+    /// Filters player clan parties out of non-player lords' army recruitment candidates.
+    /// This aligns with the game's army creation decision stage (possibleArmyMembers),
+    /// so external armies stop searching player clan parties up front.
     /// </summary>
-    [HarmonyPatch(typeof(Army))]
-    public static class ArmyJoinPatches
+    [HarmonyPatch(typeof(DefaultArmyManagementCalculationModel), nameof(DefaultArmyManagementCalculationModel.CanLordCreateArmy))]
+    public static class ArmyRecruitmentCandidatePatches
     {
-        public static IEnumerable<MethodBase> TargetMethods()
-        {
-            return typeof(Army)
-                .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(m =>
-                {
-                    if (!string.Equals(m.Name, "AddParty", System.StringComparison.Ordinal))
-                    {
-                        return false;
-                    }
-
-                    var parameters = m.GetParameters();
-                    return parameters.Length > 0 && parameters[0].ParameterType == typeof(MobileParty);
-                });
-        }
-
-        public static bool Prefix(Army __instance, MobileParty __0)
+        public static void Postfix(MobileParty leaderParty, ref MBList<MobileParty> possibleArmyMembers, ref bool __result)
         {
             var settings = ClanManagerSettings.Instance;
-            if (settings == null || !settings.EnableMod || settings.AllowPlayerClanPartiesJoinExternalArmies)
+            if (settings == null || !settings.EnableMod)
             {
-                return true;
-            }
-
-            var party = __0;
-            if (party == null || party.IsMainParty || party.LeaderHero == null)
-            {
-                return true;
+                return;
             }
 
             var playerClan = Clan.PlayerClan;
-            if (playerClan == null || party.LeaderHero.Clan != playerClan)
+            if (playerClan == null || leaderParty?.LeaderHero?.Clan == null)
             {
-                return true;
+                return;
             }
 
-            // Allowed: player-led army can still call player clan parties.
-            if (__instance?.LeaderParty != null && __instance.LeaderParty.IsMainParty)
+            // Keep player's own army flow intact; only filter external lords.
+            if (leaderParty.IsMainParty || leaderParty.LeaderHero.Clan == playerClan)
             {
-                return true;
+                return;
             }
 
-            return false;
+            if (possibleArmyMembers == null || possibleArmyMembers.Count == 0)
+            {
+                return;
+            }
+
+            for (var i = possibleArmyMembers.Count - 1; i >= 0; i--)
+            {
+                var candidate = possibleArmyMembers[i];
+                if (candidate?.LeaderHero?.Clan == playerClan)
+                {
+                    possibleArmyMembers.RemoveAt(i);
+                }
+            }
+
+            // If there is no candidate left, prevent army creation from continuing as successful.
+            if (possibleArmyMembers.Count == 0)
+            {
+                __result = false;
+            }
         }
     }
 }

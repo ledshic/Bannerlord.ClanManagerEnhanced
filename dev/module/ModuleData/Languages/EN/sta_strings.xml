@@ -11,21 +11,17 @@
     <string id="CME_EnableModHint" text="Master toggle. When off, no automated clan management actions will run." />
     <string id="CME_ShowNotifs" text="Show Notifications" />
     <string id="CME_ShowNotifsHint" text="Controls all ClanManagerEnhanced in-game messages, including status output, summaries, and diagnostics." />
-    <string id="CME_AllowExternalArmyJoin" text="Allow Player Clan Parties Join External Armies" />
-    <string id="CME_AllowExternalArmyJoinHint" text="If disabled, player clan parties can only stay in the player's own army and will leave non-player armies." />
     <string id="CME_AutoCreateIdleClanParty" text="Auto Create Party For Idle Clan Members" />
     <string id="CME_AutoCreateIdleClanPartyHint" text="Daily check: if a clan member is idle in a town or castle and party slots are available, automatically create a clan party for them." />
     <string id="CME_AutoReturnOnCreateFail" text="Auto Join Player Party When Party Creation Fails" />
     <string id="CME_AutoReturnOnCreateFailHint" text="When an idle clan member cannot create a party for any reason, automatically move them into the player main party." />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced daily check executed." />
     <string id="CME_IDLE_MEMBERS_FOUND" text="Found {COUNT} idle clan member(s) in settlements." />
-    <string id="CME_BLOCK_EXT_ARMY_JOIN" text="Blocked {COUNT} player clan party(ies) from staying in a non-player army." />
     <string id="CME_AUTO_CREATE_PARTY_CREATED" text="Automatically created {COUNT} clan party(ies) from idle settlement members." />
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="Automatically moved {COUNT} idle clan member(s) to player party after party creation failed." />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== Daily Tick Started ===" />
     <string id="CME_DBG_MOD_ENABLED" text="Mod Enabled: {VALUE}" />
     <string id="CME_DBG_DEBUG_ENABLED" text="Message Output Enabled: {VALUE}" />
-    <string id="CME_DBG_ENFORCE_EXT_ARMY" text="Enforcing external army restriction..." />
     <string id="CME_DBG_RUN_AUTO_CREATE" text="Running auto-create party for idle clan members..." />
     <string id="CME_DBG_RUN_REINFORCE" text="Running auto-reinforce parties..." />
     <string id="CME_DBG_RUN_TRANSFER_PRISONERS" text="Running auto-transfer excess prisoners..." />
@@ -106,11 +102,6 @@
     <string id="CME_DBG_NO_ADD_HERO_METHOD" text="No add-hero-to-party method found for fallback join: {HERO}" />
     <string id="CME_DBG_ADD_HERO_ARGS_BUILD_FAILED" text="Failed to build add-hero arguments for {HERO}" />
     <string id="CME_ERR_FALLBACK_JOIN_EXCEPTION" text="[ERROR] Failed fallback join to player party for {HERO}: {DETAIL}" />
-    <string id="CME_DBG_PLAYER_CLAN_NULL_EXT_ARMY" text="Player clan is null, skipping external army enforcement." />
-    <string id="CME_DBG_EXT_ARMY_ALLOW_OWN" text="Party {PARTY} is in player's own army, allowing" />
-    <string id="CME_DBG_EXT_ARMY_FORCED_LEAVE" text="Forced party {PARTY} to leave external army" />
-    <string id="CME_DBG_EXT_ARMY_BLOCKED_SUMMARY" text="External army enforcement: blocked {COUNT} parties" />
-    <string id="CME_ERR_EXT_ARMY_REMOVE_FAILED" text="[ERROR] Failed to remove party from army: {DETAIL}" />
     <string id="CME_DBG_PLAYER_CLAN_NULL_REINFORCE" text="Player clan is null, skipping reinforcement." />
     <string id="CME_DBG_REINFORCE_LOW_STRENGTH_FOUND" text="Found {LOW_COUNT} low-strength parties out of {TOTAL_COUNT} clan parties" />
     <string id="CME_DBG_REINFORCE_NO_OVERGARRISON" text="No overgarrisoned castles available for troop extraction" />

@@ -11,21 +11,17 @@
     <string id="CME_EnableModHint" text="总开关。关闭后，不会执行任何自动家族管理逻辑。" />
     <string id="CME_ShowNotifs" text="显示提示" />
     <string id="CME_ShowNotifsHint" text="控制 ClanManagerEnhanced 的全部游戏内消息输出（含状态、汇总与诊断信息）。" />
-    <string id="CME_AllowExternalArmyJoin" text="允许玩家家族队伍加入外部军团" />
-    <string id="CME_AllowExternalArmyJoinHint" text="关闭后，玩家家族队伍只能留在玩家自己的军团中，并会离开非玩家军团。" />
     <string id="CME_AutoCreateIdleClanParty" text="为闲置家族成员自动创建队伍" />
     <string id="CME_AutoCreateIdleClanPartyHint" text="每日检测：当家族成员闲置在城镇或城堡且家族仍有队伍槽位时，自动为其创建家族队伍。" />
     <string id="CME_AutoReturnOnCreateFail" text="创建队伍失败时自动加入玩家队伍" />
     <string id="CME_AutoReturnOnCreateFailHint" text="当闲置家族成员因各种原因无法创建队伍时，自动将其加入玩家主队。" />
     <string id="CME_DAILY_TICK" text="ClanManagerEnhanced 每日检查已执行。" />
     <string id="CME_IDLE_MEMBERS_FOUND" text="在聚落中检测到 {COUNT} 个闲置家族成员。" />
-    <string id="CME_BLOCK_EXT_ARMY_JOIN" text="已阻止 {COUNT} 支玩家家族队伍留在非玩家军团。" />
     <string id="CME_AUTO_CREATE_PARTY_CREATED" text="已为闲置聚落成员自动创建 {COUNT} 支家族队伍。" />
     <string id="CME_AUTO_JOIN_PLAYER_PARTY" text="因创建队伍失败，已将 {COUNT} 名闲置家族成员自动加入玩家队伍。" />
     <string id="CME_DBG_DAILY_TICK_STARTED" text="=== 每日检测开始 ===" />
     <string id="CME_DBG_MOD_ENABLED" text="模组启用: {VALUE}" />
     <string id="CME_DBG_DEBUG_ENABLED" text="消息输出启用: {VALUE}" />
-    <string id="CME_DBG_ENFORCE_EXT_ARMY" text="正在执行外部军团限制..." />
     <string id="CME_DBG_RUN_AUTO_CREATE" text="正在执行闲置成员自动建队..." />
     <string id="CME_DBG_RUN_REINFORCE" text="正在执行自动补兵..." />
     <string id="CME_DBG_RUN_TRANSFER_PRISONERS" text="正在执行自动转移过量俘虏..." />
@@ -106,11 +102,6 @@
     <string id="CME_DBG_NO_ADD_HERO_METHOD" text="未找到可用于回退加入主队的 add-hero-to-party 方法: {HERO}" />
     <string id="CME_DBG_ADD_HERO_ARGS_BUILD_FAILED" text="为 {HERO} 构建 add-hero 参数失败" />
     <string id="CME_ERR_FALLBACK_JOIN_EXCEPTION" text="[错误] {HERO} 回退加入玩家队伍失败: {DETAIL}" />
-    <string id="CME_DBG_PLAYER_CLAN_NULL_EXT_ARMY" text="玩家家族为空，跳过外部军团限制。" />
-    <string id="CME_DBG_EXT_ARMY_ALLOW_OWN" text="队伍 {PARTY} 处于玩家自有军团，允许保留" />
-    <string id="CME_DBG_EXT_ARMY_FORCED_LEAVE" text="已强制队伍 {PARTY} 离开外部军团" />
-    <string id="CME_DBG_EXT_ARMY_BLOCKED_SUMMARY" text="外部军团限制执行结果: 已拦截 {COUNT} 支队伍" />
-    <string id="CME_ERR_EXT_ARMY_REMOVE_FAILED" text="[错误] 将队伍移出军团失败: {DETAIL}" />
     <string id="CME_DBG_PLAYER_CLAN_NULL_REINFORCE" text="玩家家族为空，跳过自动补兵。" />
     <string id="CME_DBG_REINFORCE_LOW_STRENGTH_FOUND" text="发现低兵力队伍 {LOW_COUNT} 支 / 家族队伍总数 {TOTAL_COUNT} 支" />
     <string id="CME_DBG_REINFORCE_NO_OVERGARRISON" text="没有可用于抽调兵力的高驻军城堡" />
